@@ -1,0 +1,96 @@
+md C:\Jagadeesan\mongo\3.6\replicaSet\config\c0 C:\Jagadeesan\mongo\3.6\replicaSet\config\c1 C:\Jagadeesan\mongo\3.6\replicaSet\config\c2
+md C:\Jagadeesan\mongo\3.6\replicaSet\shard0\m0 C:\Jagadeesan\mongo\3.6\replicaSet\shard0\m1 C:\Jagadeesan\mongo\3.6\replicaSet\shard0\arb
+md C:\Jagadeesan\mongo\3.6\replicaSet\shard1\m0 C:\Jagadeesan\mongo\3.6\replicaSet\shard1\m1 C:\Jagadeesan\mongo\3.6\replicaSet\shard1\arb
+md C:\Jagadeesan\mongo\3.6\replicaSet\shard2\m0 C:\Jagadeesan\mongo\3.6\replicaSet\shard2\m1 C:\Jagadeesan\mongo\3.6\replicaSet\shard2\arb
+md C:\Jagadeesan\mongo\3.6\replicaSet\s0 C:\Jagadeesan\mongo\3.6\replicaSet\s1
+
+
+1st ReplicaSet
+
+mongod --replSet shard0 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard0\m0 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard0\m0\mongod.log --port 27107 --oplogSize 10 --bind_ip localhost --shardsvr
+
+mongod --replSet shard0 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard0\m1 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard0\m1\mongod.log --port 27108 --oplogSize 10 --bind_ip localhost --shardsvr
+
+mongod --replSet shard0 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard0\arb --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard0\arb\mongod.log --port 27109 --oplogSize 10 --bind_ip localhost --shardsvr
+
+mongo --port 27107 
+rs.initiate();
+rs.add("localhost:27108");
+rs.addArb('localhost:27109');
+
+
+2nd ReplicaSet
+
+mongod --replSet shard1 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard1\m0 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard1\m0\mongod.log --port 27117 --oplogSize 10 --bind_ip localhost --shardsvr 
+
+mongod --replSet shard1 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard1\m1 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard1\m1\mongod.log --port 27118 --oplogSize 10 --bind_ip localhost --shardsvr
+
+mongod --replSet shard1 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard1\arb --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard1\arb\mongod.log --port 27119 --oplogSize 10 --bind_ip localhost --shardsvr
+
+mongo --port 27117 
+rs.initiate();
+rs.add("localhost:27118");
+rs.addArb('localhost:27119');
+
+
+3rd ReplicaSet
+
+mongod --replSet shard2 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard2\m0 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard2\m0\mongod.log --port 27127 --oplogSize 10 --bind_ip localhost --shardsvr 
+
+mongod --replSet shard2 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard2\m1 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard2\m1\mongod.log --port 27128 --oplogSize 10 --bind_ip localhost --shardsvr
+
+mongod --replSet shard2 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard2\arb --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard2\arb\mongod.log --port 27129 --oplogSize 10 --bind_ip localhost --shardsvr
+
+mongo --port 27127 
+rs.initiate();
+rs.add("localhost:27128");
+rs.addArb('localhost:27129');
+
+
+
+
+Config Server:
+
+mongod --smallfiles --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\config\c0 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\config\c0\mongod.log --port 27217 --configsvr --replSet csrs --bind_ip localhost
+
+mongod --smallfiles --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\config\c1 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\config\c1\mongod.log --port 27218 --configsvr --replSet csrs --bind_ip localhost
+
+mongod --smallfiles --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\config\c2 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\config\c2\mongod.log --port 27219 --configsvr --replSet csrs --bind_ip localhost
+
+
+mongo --port 27217
+rs.initiate();
+rs.add("localhost:27218");
+rs.add('localhost:27219');
+
+
+
+
+mongos --logpath C:\Jagadeesan\mongo\3.6\replicaSet\s0\mongos.log --port 37017 --configdb "csrs/localhost:27217,localhost:27218,localhost:27219" --shardsvr
+mongos --logpath C:\Jagadeesan\mongo\3.6\replicaSet\s1\mongos.log --port 37018 --configdb "csrs/localhost:27217,localhost:27218,localhost:27219"
+
+
+mongo --port 37017
+mongo --port 37018
+
+use admin;
+sh.addShard('shard0/localhost:27107');
+sh.addShard('shard1/localhost:27117'); 
+sh.addShard('shard2/localhost:27127');
+
+
+sh.enableSharding("shardexample")
+sh.shardCollection("shardexample.shardcol", { a : 1, b : 1 } )
+
+for (i=0; i<100; i++) {
+docArr = [];
+for (j=0; j<100; j++) {
+docArr.push(
+{
+a : i, b : j,
+c : "Filler String 0000000000000000000000000000000000000000000000000"
+} )
+};
+db.shardcol.insert(docArr)
+};
+
