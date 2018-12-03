@@ -1,0 +1,3034 @@
+db.metadata.find(
+{"processStatus.pNm":"UPLOAD"}
+).count();
+
+
+db.createRole(
+{role: "appsRole",
+privileges: [
+{ resource: { cluster: true }, actions: [ "serverStatus" ] }
+],roles: []
+})
+
+mongoexport --port 27017 -u admin -p 'd3v@dm!n' --authenticationDatabase admin  
+--db documentProcessing --collection system.profile --type=csv --out /home/109720/mongodb_16302017/collscan_profiler_output_docMetadata.csv --query '{docsExamined:{$gt:0},keysExamined:{$eq:0}}' --fields op, ns, query, keysExamined, docsExamined, cursorExhausted, numYield, locks, nreturned, responseLength, protocol, millis, planSummary, execStats, ts, client, allUsers, user 
+
+mongodump --port 27017 -u admin -p 'd3v@dm!n' --authenticationDatabase admin --db documentProcessing --collection task --out /home/109757/
+
+use admin;
+db.auth('admin','d3v@dm!n');
+
+db.system.profile.distinct("ns");
+
+db.system.profile.find( {millis : { $gt : 4 } } ).sort( { ts: 1} );
+
+db.system.profile.find({"ns":"docMetadata.metadata"},{query:1,millis:1,ts:1}).sort( { millis: -1} ).limit(10);
+
+
+db.system.profile.find(
+{$and:[
+{"ts":{$gt:ISODate("2017-04-19T02:02:00.000Z"),$lt:ISODate("2017-04-19T02:03:00.000Z")}},
+{"execStats.stage":"UPDATE"}
+]},
+{query:1,ts:1,millis:1}
+).sort( { millis: -1} ).limit(10);
+
+db.system.profile.find({
+"ns":{$nin:["docMetadata.system.profile"]}
+},{query:1,millis:1,ts:1,ns:1}).sort( { millis: -1} ).limit(10);
+
+
+db.metadata.find({"projectId" : "57ead16da92a5316c1d5c7d3","type" : "FR", "name" : "DragDropFileroom"}).explain();
+   
+db.metadata.update
+(
+{name:<name>,type:<type>},
+{$setOnInsert:{<field>:<value>}},
+{upsert:true}
+)
+
+Find stats for highest executed
+
+db.system.profile.find(
+{"ns":"docMetadata.metadata",
+"ts" : { "$gte" : ISODate("2017-05-29T04:00:00.000Z")},
+"ts" : { "$lte" : ISODate("2017-05-29T05:00:00.000Z")},
+"updateobj":{$exists:false},
+"query._id":{$exists:true}
+},{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1}
+).sort({millis:1}).limit(10);
+
+
+Find stats for highest executed
+
+db.system.profile.find(
+{"ns":"docMetadata.metadata",
+"query.projectId" : "58e24cee11cf7b000e458c3e",
+"ts" : { "$gte" : ISODate("2017-05-29T06:00:00.000Z"),"$lte" : ISODate("2017-05-29T06:30:00.000Z")},
+"updateobj":{$exists:false},
+"query._id":{$exists:true}
+},{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1}
+).sort({ts:1});
+
+69
+
+"query.projectId" : "58e24cee11cf7b000e458c3e",
+
+db.system.profile.find(
+{"ns":"docMetadata.metadata",
+"updateobj":{$exists:false},
+"ts" : { "$gte" : ISODate("2017-05-29T09:50:00.000Z"),"$lte" : ISODate("2017-05-29T09:55:00.000Z")},
+"query._id":{$exists:true}
+},{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1}
+).sort({millis:-1});
+
+
+{ "query" : 
+{ "projectId" : "58e24cee11cf7b000e458c3e", 
+c
+ObjectId("592bef4cbf1092001065fb4a"), ObjectId("592bef4cbf1092001065fb4c"), ObjectId("592bef4dbf1092001065fb4e"), 
+ObjectId("592bef4dbf1092001065fb50") ] } }, 
+"keysExamined" : 8, "docsExamined" : 7, "numYield" : 3, "millis" : 153, "ts" : ISODate("2017-05-29T09:53:57.800Z") }
+
+
+291
+
+mongoexport --port 27017 -u admin -p 'b4n8kucfcy' --authenticationDatabase admin --db docMetadata --collection system.profile --type=csv --out /home/109757/updateQuery290517_updateQuery.csv --query '{ns:"docMetadata.metadata",updateobj:{$exists:true},"query.projectId":"58e24cee11cf7b000e458c3e",ts : { "$gte" : ISODate("2017-05-29T06:00:00.001Z"),"$lte" : ISODate("2017-05-29T06:30:00.000Z")}}' --fields ts,query,updateobj,millis
+mongoexport --port 27017 -u admin -p 'b4n8kucfcy' --authenticationDatabase admin --db docMetadata --collection system.profile --type=csv --out /home/109757/updateQuery290517_readQuery.csv --query '{ns:"docMetadata.metadata",updateobj:{$exists:false},"query.projectId":"58e24cee11cf7b000e458c3e",ts : { "$gte" : ISODate("2017-05-29T06:00:00.001Z"),"$lte" : ISODate("2017-05-29T06:30:00.000Z")}}' --fields ts,query,updateobj,millis
+
+
+db.metadata.find({
+projectId:"58e24cee11cf7b000e458c3e",
+type:"FR"}).explain('executionStats')
+
+db.metadata.find({
+projectId:"58e24cee11cf7b000e458c3e",
+type:"FR"})
+
+db.metadata.aggregate(
+[{$project: {
+projectId:"58e24cee11cf7b000e458c3e",
+_id:ObjectId("591b28ba18651f0010140c85"),
+type:"FR",
+numberOfAccess: { $size: "$access" }}}]
+);
+
+{$group: {_id: "$access.permissionGroupId",count: $sum: 1}}
+
+db.metadata.aggregate(
+{$match:{projectId:"58e24cee11cf7b000e458c3e",_id:ObjectId("591b28ba18651f0010140c85"),type:"FR"}},
+{$unwind: "$access"},
+{$group:{_id:"$access.accessLevel",'count': {'$sum':1 }}}
+)
+
+db.details.aggregate(
+{$match:{"projectInfo.state":"ACTIVE"}},
+{$group:{_id:"$projectInfo.state",'count': {'$sum':1 }}}
+)
+
+db.Filing.aggregate(
+{$match:{IsActive:true}},
+{$unwind: "$EdgarBuildAndFile"},
+{$group:{_id:"$EdgarBuildAndFile.FilingDocumentSequences",'count': {'$sum':1 }}},
+{$match:{"count" : {"$gte":1}}}
+)
+
+
+db.Filing.aggregate(
+{$match:{IsActive:true}},
+{$unwind: "$EdgarBuildAndFile"},
+{$group:{_id:"$EdgarBuildAndFile.FilingDocumentSequences",'count': {'$sum':1 }}},
+{$match:{"count" : {"$gte":1}}}
+)
+
+db.Filing.find({ "EdgarBuildAndFile.FilingDocumentSequences" : { $size: 2 }},{"EdgarBuildAndFile.FilingDocumentSequences":1}).pretty();
+db.Filing.find({"NamesArrayLength": {$gt: 1} });
+
+db.Filing.find({ "EdgarBuildAndFile.FilingDocumentSequences" : { $size: 1 }});
+
+db.Filing.findOne({_id:ObjectId("594d7c1a29157f248c143b65")});
+
+db.Filing.aggregate(
+{$unwind: "$EdgarBuildAndFile"},
+{$group:{_id:"$EdgarBuildAndFile.FilingDocumentSequences",'count': {'$sum':1 }}}
+)
+
+
+db.metadata.aggregate(
+{$match:{projectId:"58e24cee11cf7b000e458c3e"}},
+{$unwind: "$access"},
+{$group:{
+_id:{AccessLevel:"$access.accessLevel",ObjectId:"$_id",Type:"$type"},
+'count': {'$sum':1 }}},
+{$out:"tmpAccessCount"}
+)
+
+db.metadata.aggregate(
+{$match:{projectId:"58e24cee11cf7b000e458c3e"}},
+{$group:{
+_id:"$type",
+'count': {'$sum':1 }}}
+)
+
+db.metadata.aggregate(
+{$match:{projectId:"58e24cee11cf7b000e458c3e"}},
+{$unwind: "$access"},
+{$group:{
+_id:{AccessLevel:"$access.accessLevel",Type:"$type"},
+'count': {'$sum':1 }}}
+)
+
+mongoexport --port 27017 -u admin -p 'b4n8kucfcy' --authenticationDatabase admin --db docMetadata --collection tmpAccessCount --type=csv --out /home/109757/tmpAccessCount2905.csv --fields _id.AccessLevel,_id.ObjectId,_id.Type,count
+
+db.metadata.aggregate(
+{$match:{projectId:"58e24cee11cf7b000e458c3e",type:"FR"}},
+{$unwind: "$access"},
+{$group:{
+_id:{access:"$access.accessLevel",id1:"$_id"},
+'count': {'$sum':1 }}},
+{$group:{
+_id:null,count:{'$sum':1 }}}
+)
+
+11.30
+11.50
+58e24cee11cf7b000e458c3e 
+
+
+db.system.profile.find(
+{"ns":"docMetadata.metadata",
+"query.projectId" : "58e24cee11cf7b000e458c3e",
+"updateobj":{$exists:false},
+"ts" : { "$gte" : ISODate("2017-05-30T05:20:00.000Z"),"$lte" : ISODate("2017-05-30T05:30:00.000Z")},
+"query._id":{$exists:true}
+},{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1}
+).sort({millis:-1});
+
+
+db.system.profile.find({"ts" : { "$gte" : ISODate("2017-05-30T05:20:00.000Z"),"$lte" : ISODate("2017-05-30T05:30:00.000Z")},},{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1}).sort( { millis: -1} ).limit(5);
+
+
+{ "query" : { "projectId" : "58e24cee11cf7b000e458c3e", "access" : { "$elemMatch" : { "permissionGroupId" : "592d01b0829f8400155aada6" } } }, "updateobj" : { "$pull" : { "access" : { "permissionGroupId" : { "$in" : [ "592d01b0829f8400155aada6" ] } } } }, "keysExamined" : 3075, "docsExamined" : 3075, "numYield" : 991, "millis" : 19687, "ts" : ISODate("2017-05-30T05:23:57.929Z") }
+{ "query" : { "projectId" : "58e24cee11cf7b000e458c3e", "access" : { "$elemMatch" : { "permissionGroupId" : "592d01f0390c77001404dca8" } } }, "updateobj" : { "$pull" : { "access" : { "permissionGroupId" : { "$in" : [ "592d01f0390c77001404dca8" ] } } } }, "keysExamined" : 3083, "docsExamined" : 3083, "numYield" : 976, "millis" : 19309, "ts" : ISODate("2017-05-30T05:26:17.500Z") }
+{ "query" : { "access" : { "$exists" : true }, "projectId" : "58e24cee11cf7b000e458c3e" }, "updateobj" : { "$addToSet" : { "access" : { "permissionGroupId" : "592d01f0390c77001404dca8", "accessLevel" : "HIDDEN" } } }, "keysExamined" : 3077, "docsExamined" : 3077, "numYield" : 962, "millis" : 18601, "ts" : ISODate("2017-05-30T05:24:18.022Z") }
+{ "query" : { "access" : { "$exists" : true }, "projectId" : "58e24cee11cf7b000e458c3e" }, "updateobj" : { "$addToSet" : { "access" : { "permissionGroupId" : "592d01b0829f8400155aada6", "accessLevel" : "HIDDEN" } } }, "keysExamined" : 3077, "docsExamined" : 3077, "numYield" : 938, "millis" : 18137, "ts" : ISODate("2017-05-30T05:23:13.284Z") }
+{ "query" : { "projectId" : "58af4c5458677000132f7f07", "access" : { "$elemMatch" : { "permissionGroupId" : "592d0281829f8400155aaec9" } } }, "updateobj" : { "$pull" : { "access" : { "permissionGroupId" : { "$in" : [ "592d0281829f8400155aaec9" ] } } } }, "keysExamined" : 9, "docsExamined" : 9, "numYield" : 10, "millis" : 3082, "ts" : ISODate("2017-05-30T05:26:29.297Z") }
+
+
+db.metadata.aggregate([
+{$match:{projectId:"58e24cee11cf7b000e458c3e"}},
+{$unwind: "$access"},
+{$group:{_id:{AccessLevel:"$access.accessLevel",AccessLevelGroupId:"$access.permissionGroupId",ProjectId:"$projectId",Type:"$type",docId:"$_id"}}},
+{$out:"tmpAccessDetail"}
+], { allowDiskUse: true }
+)
+
+db.tmpAccessDetail.find().forEach(
+	function(result) 
+	{ 
+		var AccessLevel=result._id.AccessLevel;
+		var AccessLevelGroupId=result._id.AccessLevelGroupId;
+		var ProjectId=result._id.ProjectId;
+		var Type=result._id.Type;
+		var docId=result._id.docId;
+		var ContentAccessName="empty";
+		var ContentAccessType="empty";
+		db.contentAccessGroup.find({projectId:ProjectId,_id:ObjectId(AccessLevelGroupId)}).forEach(function(cA){
+			ContentAccessName=cA.name;
+			ContentAccessType=cA.type;
+		})	
+		db.tmpAccessDetailFinal.insert({accessLevel:AccessLevel,accessLevelGroupId:AccessLevelGroupId,projectId:ProjectId,type:Type,ContentAccessName:ContentAccessName,ContentAccessType:ContentAccessType,docId:docId});	
+	}
+)
+
+mongoexport --port 27017 --db docMetadata --collection tmpAccessDetailFinal --type=csv --out C:/Users/109757/Desktop/tmptmpAccessDetail.csv --fields docId,accessLevel,accessLevelGroupId,projectId,type,_id,ContentAccessName,ContentAccessType
+
+"592bbf2bd4d7a100117ea680"
+
+db.metadata.find({projectId:"58e24cee11cf7b000e458c3e"},{access:1,name:1,_id:1,projectId:1}).forEach(
+	function(result) 
+	{ 
+		print( "Group: " + result.access);
+	}
+)
+
+
+
+
+JAV - 11857 - Document various MongoDB manual changes, to integrate in puppet
+JAV - 11490 - Create a Script to Copy Data from Develop to Local Machine (Linux user and Windows User)
+
+{ "_id" : { "AccessLevel" : "DOWNLOAD" }, "count" : 1 }
+{ "_id" : { "AccessLevel" : "VIEW" }, "count" : 56 }
+{ "_id" : { "AccessLevel" : "HIDDEN" }, "count" : 3169067 }
+{ "_id" : { "AccessLevel" : "EDIT" }, "count" : 28 }
+{ "_id" : { "AccessLevel" : "PRINT" }, "count" : 40 }
+
+
+{ "_id" : { "AccessLevel" : "HIDDEN", "Type" : "T" }, 		"count" : 1015 }
+{ "_id" : { "AccessLevel" : "VIEW", "Type" : "FR" }, 		"count" : 31 }
+{ "_id" : { "AccessLevel" : "DOWNLOAD", "Type" : "FR" },	"count" : 1 }
+{ "_id" : { "AccessLevel" : "PRINT", "Type" : "F" }, 		"count" : 16 }
+{ "_id" : { "AccessLevel" : "EDIT", "Type" : "FR" }, 		"count" : 12 }
+{ "_id" : { "AccessLevel" : "EDIT", "Type" : "F" }, 		"count" : 8 }
+{ "_id" : { "AccessLevel" : "HIDDEN", "Type" : "F" }, 		"count" : 1359383 }
+{ "_id" : { "AccessLevel" : "PRINT", "Type" : "D" }, 		"count" : 24 }
+{ "_id" : { "AccessLevel" : "EDIT", "Type" : "D" }, 		"count" : 8 }
+{ "_id" : { "AccessLevel" : "VIEW", "Type" : "F" }, 		"count" : 25 }
+{ "_id" : { "AccessLevel" : "HIDDEN", "Type" : "FR" }, 		"count" : 1433469
+{ "_id" : { "AccessLevel" : "HIDDEN", "Type" : "D" }, 		"count" : 375200 }
+
+
+db.currentOp.find({waitingForLock:true});
+
+db.currentOp(
+   {     
+     "waitingForLock" : true
+   }
+)
+
+db.currentOp(
+   {
+     "active" : true,
+     "secs_running" : { "$gt" : 10 },
+     "ns" : /^projects\./
+   }
+)
+
+
+db.system.profile.findOne(
+{"ns":"projects.details"});
+
+
+58af4c5458677000132f7f07
+59378e46a9b7aa0018597f78
+5937aa69a9b7aa0018598028
+
+db.system.profile.find(
+{"ns":"docMetadata.metadata",
+"query.projectId" : "5937aa69a9b7aa0018598028",
+"ts" : { "$gte" : ISODate("2017-06-07T07:32:00.000Z"),"$lte" : ISODate("2017-06-07T07:34:00.000Z")},
+"millis":{$ne:0},
+},{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1}
+).sort({millis:-1});
+
+
+db.system.profile.find(
+{"ns":"userDetails.projectMembership",
+"updateobj.contentAccessGroupId":"584ecec83ab8e7249afeef67",
+"ts" : { "$gte" : ISODate("2017-06-13T01:00:00.000Z"),"$lte" : ISODate("2017-06-13T09:00:00.000Z")},
+"updateobj":{$exists:true}},
+{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1}
+).count();
+
+db.system.profile.find(
+{"ns":"userDetails.projectMembership",
+"query.projectId":"584ecec83ab8e7249afeef67",
+"ts" : { "$gte" : ISODate("2017-06-13T05:00:00.000Z"),"$lte" : ISODate("2017-06-13T06:00:00.000Z")},
+'op':'remove'}, 
+{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1}
+).count();
+
+db.system.profile.find(
+{"ns":"userDetails.projectMembership",
+"ts" : { "$gte" : ISODate("2017-06-13T05:21:00.000Z"),"$lte" : ISODate("2017-06-13T05:37:00.000Z")}}, 
+{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1}
+).count();
+
+
+mongoexport --port 27017 -u admin -p 'b4n8kucfcy' --authenticationDatabase admin --db userDetails --collection system.profile --type=csv --out /home/109757/updateQuery290517_readQuery.csv --query '{ns:"userDetails.projectMembership",ts : { "$gte" : ISODate("2017-06-13T05:21:00.000Z"),"$lte" : ISODate("2017-06-13T05:37:00.000Z")}}' --fields ts,query,updateobj,millis
+
+584ecec83ab8e7249afeef67
+
+
+db.metadata.find({projectId:"5937aa69a9b7aa0018598028"}).pretty();
+
+{ "query" : { "access" : { "$exists" : true }, "projectId" : "59378e46a9b7aa0018597f78" }, "updateobj" : { "$addToSet" : { "access" : { "permissionGroupId" : "59379063bb9a940017c5fc1c", "accessLevel" : "HIDDEN" } } }, "keysExamined" : 49, "docsExamined" : 49, "numYield" : 0, "millis" : 4, "ts" : ISODate("2017-06-07T05:34:26.067Z") }
+
+
+db.details.find({})
+
+
+dladhan
+January1/Andrew0509
+mgd-eu2s-arbc-1.
+# mongod.conf
+
+mgd-us2s-cfg-1c.dmz01.mrll.com:27017
+
+
+# for documentation of all options, see:
+#   http://docs.mongodb.org/manual/reference/configuration-options/
+
+# where to write logging data.
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongo
+  journal:
+    enabled: true
+#  engine:
+#  mmapv1:
+#  wiredTiger:
+
+# how the process runs
+processManagement:
+  fork: true  # fork and run in background
+  pidFilePath: /var/run/mongodb/mongod.pid  # location of pidfile
+
+# network interfaces
+net:
+  port: 27017
+  bindIp: 127.0.0.1  # Listen to local interface only, comment to listen on all interfaces.
+
+
+#security:
+
+#operationProfiling:
+
+#replication:
+
+#sharding:
+
+## Enterprise-Only Options
+
+#auditLog:
+
+#snmp:
+
+
+
+
+
+
+# mongod.conf
+
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+  logRotate: reopen
+
+
+storage:
+  dbPath: /var/lib/mongodb
+  journal:
+    enabled: false
+
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongod.pid
+
+net:
+  port: 27017
+  compression:
+    compressors: "snappy"
+
+security:
+  authorization: enabled
+  keyFile: /etc/regional-keyfile
+
+replication:  
+  replSetName: config
+
+sharding:
+  clusterRole: configsvr
+  
+members:
+   arbiterOnly:true
+
+daemon --user "$MONGO_USER" --check $mongod "$NUMACTL $mongod $OPTIONS >/dev/null 2>&1"
+
+
+
+trashtest@mailinator.com  
+
+
+
+
+var objInsert={ 
+    "_id" : ObjectId("584ecf61a7a6f62932871c4d"), 
+    "_class" : "com.mrll.javelin.userservice.model.entity.ProjectMembership", 
+    "projectId" : "584ecec83ab8e7249afeef67", 
+    "userId" : "7717916d-970a-4c97-8b5b-6d73df4fa54f", 
+    "groupId" : "", 
+    "status" : "ACTIVE", 
+    "contentAccessGroupId" : "584ecec81c9dc5000f3c30c4", 
+    "featureAccessGroupId" : "584ecec8a7a6f62932871c48", 
+    "userGroups" : [
+        {
+            "userGroupId" : "584ecec8a7a6f62932871c48", 
+            "userGroupType" : "FEATURE_PERMISSION_GROUP"
+        }, 
+        {
+            "userGroupId" : "584ecec81c9dc5000f3c30c4", 
+            "userGroupType" : "CONTENT_PERMISSION_GROUP"
+        }
+    ], 
+    "lastModifiedTime" : NumberLong(1481559905796), 
+    "accept" : false
+}
+db.projectMembership.insert(objInsert);
+
+
+
+db.details.aggregate(
+    {"$group" : { "_id": "$emailAddress", "count": { "$sum": 1 } } },
+    {"$match": {"_id" :{ "$ne" : null } , "count" : {"$gt": 1} } }, 
+    {"$project": {"emailAddress" : "$_id", "_id" : 0} },
+    {"$sort": {"count" : -1} }
+)
+
+
+db.details.dropIndex({ "emailAddress" : 1 })
+db.details.createIndex({emailAddress:1},{unique:false});
+
+db.metadata.update( {}, 
+{ $pull : { access : {"_id": ObjectId("57f65f8ca560310015797bae")} } }, false, false )
+
+
+db.metadata.update(
+{ "_id": ObjectId("57f65f8ca560310015797baf"),projectId:"57ead16da92a5316c1d5c7d3"},
+{$pull :{ "access" : {}}}
+)
+					
+
+var inserObj={"_id" : ObjectId("57f65f8ca560310015797bae"),
+"_class" : "com.mrll.javelin.api.metadata.model.entity.MetadataCommBe
+"projectId" : "57ead16da92a5316c1d5c7d3",
+"userId" : "23005af0-d8a1-4268-9a51-10ce1c611188",
+"name" : "3 Page BW xlsx.xlsx",
+"index" : "5.1.13.10",
+"type" : "F",
+"docId" : "6a555c56-38fa-4085-97e2-68ccf3ddebea",
+"fileOperation" : "0",
+"fileType" : "xlsx",
+"status" : "DONE",
+"isDelete" : false,
+"isActive" : false,
+"docForms" : [
+{
+"pName" : "ORIGINAL",
+"docId" : "6a555c56-38fa-4085-97e2-68ccf3ddebea",
+"docProperties" : {
+"fileSize" : NumberLong(15397),
+"pageCount" : 0,
+"fileType" : "xlsx"
+}
+},
+{
+"pName" : "OCR_TIKA",
+"docId" : "6a555c56-38fa-4085-97e2-68ccf3ddebea_OCR_T
+"docProperties" : {
+"fileSize" : NumberLong(4418),
+"pageCount" : 1,
+"fileType" : "txt"
+}
+},
+{
+"pName" : "PDFC",
+"docId" : "6a555c56-38fa-4085-97e2-68ccf3ddebea_PDFC"
+"docProperties" : {
+"fileSize" : NumberLong(17998),
+"pageCount" : 3,
+"fileType" : "pdf"
+}
+},
+{
+"pName" : "OCR",
+"docId" : "6a555c56-38fa-4085-97e2-68ccf3ddebea_OCR",
+"docProperties" : {
+"fileSize" : NumberLong(7011),
+"pageCount" : 0,
+"fileType" : "txt"
+}
+},
+{
+"pName" : "XOD",
+"docId" : "6a555c56-38fa-4085-97e2-68ccf3ddebea_XOD",
+"docProperties" : {
+"fileSize" : NumberLong(92991),
+"pageCount" : 0,
+"fileType" : "xod"
+}
+}
+],
+"createDate" : ISODate("2016-10-06T14:28:28.693Z"),
+"processStatus" : [
+{
+"pNm" : "UPLOAD",
+"status" : "UPLOAD.DONE",
+"desc" : "original uploaded"
+},
+{
+"pNm" : "OCR_TIKA",
+"status" : "OCR_TIKA.DONE",
+"desc" : "OCR_TIKA DONE"
+},
+{
+"pNm" : "OCR",
+"status" : "OCR.DONE",
+"desc" : "null"
+},
+{
+"pNm" : "PDFC",
+"status" : "PDFC.DONE",
+"desc" : "null"
+},
+{
+"pNm" : "PWF",
+"status" : "PWF.DONE",
+"desc" : "PROCESS COMPLETE"
+},
+{
+"pNm" : "XOD",
+"status" : "XOD.PROGRESS",
+"desc" : "XOD in PROGRESS"
+},
+{
+"pNm" : "ELASTICSEARCH",
+"status" : "ELASTICSEARCH.DONE",
+"desc" : "ELASTICSEARCH DONE"
+}
+],
+"downloadOnly" : false,
+"retryCount" : 0,
+"access" : [
+{
+"permissionGroupId" : "57f29d2ae0ee9b0013db437a",
+"accessLevel" : "PRINT"
+},
+{
+"permissionGroupId" : "58ade70f37f6410013cc4f92",
+"accessLevel" : "HIDDEN"
+},
+{
+"permissionGroupId" : "58ade71b1dc208000ed43d26",
+"accessLevel" : "HIDDEN"
+},
+{
+"permissionGroupId" : "58ade72537f6410013cc4f93",
+"accessLevel" : "HIDDEN"
+},
+{
+"permissionGroupId" : "58ade7391dc208000ed43d27",
+"accessLevel" : "HIDDEN"
+},
+{
+"permissionGroupId" : "58b42169cef0b8000fac88ef",
+"accessLevel" : "HIDDEN"
+}
+]
+}
+db.test.insert(inserObj);
+
+
+db.metadata.find{
+staus:"Upload_failed",
+projectId:"asdjhksfu478"
+};
+
+
+
+db.metadata.find{
+$or:[
+{status:"upload_failed"},{projectId:"asdfasf"}
+]};
+
+
+db.metadata.find({"_id" : ObjectId("594772af01492f0016ada26f")}) 
+
+
+db.system.profile.find(
+{"ns":"docMetadata.metadata",
+"query.projectId":"5912ad2b527e76001001a0c1",
+"ts" : { "$gte" : ISODate("2017-06-19T09:30:00.000Z"),"$lte" : ISODate("2017-06-19T10:00:00.000Z")},
+'op':'remove'}, 
+{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1,ns:1}
+).count();
+
+
+db.system.profile.find(
+{"ns":"docMetadata.metadata",
+'op':'remove'}, 
+{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1,ns:1}
+).count();
+
+
+db.metadata.find({
+"name" :  /Bw/i
+});
+
+db.metadata.find({
+"name" : { "$in" : [ /Bw/i]},
+});
+
+db.metadata.find({
+"name" : { "$in" : [ /EBW-Exp-Letter/,"1.8 Copy (2) of Copy of ...1.1.1 3 Page Bw XLS.xls"]} 
+},{name:1});
+
+db.metadata.find({
+"name" : { "$in" : [ /EBW-Exp-Letter/,/upgmBWouqzffweaakatb/i]} 
+},{name:1});
+
+
+db.metadata.find({
+"name" : { "$in" : [ /EBW-Exp-Letter/,"1.8 Copy (2) of Copy of ...1.1.1 3 Page BW XLS.xls"]} 
+},{name:1});
+
+
+db.metadata.find({projectId:"58da966e8059b600131b15ed"});
+db.metadata.find({projectId:"592738cc003326001549f9fc",fileroomName:"Trash",type:"F",isActive:false,"status" : "DONE"}).count();
+
+db.metadata.find({_id:ObjectId("595a94c095ea3e0014bc5997")});
+
+
+db.system.profile.find(
+{"ns":"docMetadata.metadata","query.filter.projectId":"57d2dd643c9c1032eee7d216"}, 
+{ts:1,query:1,"updateobj":1,numYield:1,"keysExamined":1,"docsExamined":1,"millis":1,nreturned:1,ns:1}
+).sort( { ts: -1} ).limit(1);
+
+
+{ "ns" : "docMetadata.metadata", 
+"query" : { "_id" : ObjectId("595b3fd7e3ed1c0016163181"), 
+"projectId" : "58da966e8059b600131b15ed", 
+"docForms" : { "$elemMatch" : { "pName" : "XOD" } } }, 
+"updateobj" : { "$set" : { "docForms.$" : { "pName" : "XOD", "docId" : "75454b1b-c29d-4d87-a06c-4df9754c9428_XOD", "uploadedAt" : null, 
+"docProperties" : { "fileSize" : NumberLong(72999), "pageCount" : 0, "fileType" : "xod" } } } },
+"keysExamined" : 1, "docsExamined" : 1, "numYield" : 0, "millis" : 0, "ts" : ISODate("2017-07-04T07:12:36.236Z") }
+
+
+9884950571
+Uthira kumar
+12 km
+Toll & Parking
+3300 - 
+
+
+db.metadata.find({"projectId" : "592738cc003326001549f9fc" , "type" : { "$in" : [ "FR"]} , "isDelete" : false});
+db.metadata.find({"projectId" : "592738cc003326001549f9fc" , "type" : { "$in" : [ "F"]} , "isDelete" : false}).count();	
+
+db.metadata.find({"projectId" : "57d2dd643c9c1032eee7d216" , "isDelete" : true}).count();	
+
+
+db.metadata.find(
+{"projectId" : "57d2dd643c9c1032eee7d216", 
+"isDelete" : false, 
+"$or" : [ 
+{ "staging" : { "$exists" : false } }, 
+{ "staging.calculatedPublishingStatus" : { "$exists" : false } }, 
+{ "staging.calculatedPublishingStatus" : { "$in" : [ "UNPUBLISHED", "PARTIAL" ] } } 
+]}
+);	
+
+
+{ "ns" : "docMetadata.metadata", 
+"query" : { "find" : "metadata", "filter" : { "projectId" : "592738cc003326001549f9fc", "isDelete" : true }, 
+"projection" : { "access" : 1, "docId" : 1, "groupId" : 1, "type" : 1, "isActive" : 1, "downloadOnly" : 1, "docForms" : 1, "fileroomId" : 1, "fileOperation" : 1, 
+"correlationId" : 1, "_id" : 1, "staging" : 1, "createDate" : 1, "failureNotes" : 1, "processes" : 1, "isDelete" : 1, "index" : 1, "userId" : 1, "parentId" : 1, "parentName" : 1, 
+"versions" : 1, "deletedDate" : 1, "failureReason" : 1, "name" : 1, "fileroomName" : 1, "projectId" : 1, "fileType" : 1, "status" : 1, "metadataType" : 1 }, 
+"shardVersion" : [ Timestamp(0, 0), ObjectId("000000000000000000000000") ] }, "keysExamined" : 101, "docsExamined" : 101, "numYield" : 1, "nreturned" : 101,
+ "millis" : 0, "ts" : ISODate("2017-07-05T10:34:28.087Z") }
+
+ 
+ db.metadata.remove({"projectId" : "58da966e8059b600131b15ed","type" : { "$in" : [ "F","FR","D"]} });
+ db.metadata.remove({"projectId" : "58da966e8059b600131b15ed","type" : { "$in" : [ "F","FR","D"]} });
+ 
+ 15000
+ 
+ 
+ db.metadata.find({"projectId":"57e0b305be848b4a5da3b481",_id:ObjectId("592ece3c0ab96f0017f87508")},{"access":1});
+ 
+ db.metadata.find({"projectId":"57e0b305be848b4a5da3b481","access.permissionGroupId":"57e0b305b628f62d999ea28e"},{name:1});
+ db.metadata.find({_id:ObjectId("594044c8082b70001031d1b2"),"projectId":"57e0b305be848b4a5da3b481","access.permissionGroupId":"57e0b305b628f62d999ea28e"},{name:1});
+ 
+ db.contentAccessGroup.find({"projectId":"57e0b305be848b4a5da3b481"});
+ db.contentAccessGroup.find({"name":"Admin"})
+ 
+ db.contentAccessGroup.find({"type":"ADMIN","projectId":"57e0b305be848b4a5da3b481"}).forEach(function(doc){ 
+	var permissionGroupId=doc._id.str;	
+	var projectId=doc.projectId;
+	db.metadata.find({"projectId":projectId,"access.permissionGroupId":permissionGroupId,"access.accessLevel":"HIDDEN"}).forEach(function(result){})  	
+ });
+ 
+ 
+ 
+db.contentAccessGroup.find({"type":"ADMIN"}).forEach(function(doc){ 
+var permissionGroupId=doc._id.str;	
+var projectId=doc.projectId;
+db.metadata.find({"projectId":projectId,"access.permissionGroupId":permissionGroupId,"access.accessLevel":"HIDDEN"}).forEach(function(result){
+db.tmpAccessData.insert({docMetaId:result._id,projectId:result.projectId,permissionGroupId:permissionGroupId,metaname:result.name});
+})  	
+});
+ 
+	
+ 
+ mongoexport --port 27017 -u admin -p 'd3v@dm!n' --authenticationDatabase admin  
+--db docMetadata --collection tmpAccessData --type=csv --out /home/109757/tmpAccessData.csv  --fields docMetaId,projectId,permissionGroupId,metaname
+
+
+AccSpec_MessageTemplate_Prj_DND
+db.details.find({_id:ObjectId("59674d042d3c9f0011330fcd")},{"projectInfo.projectName":1})
+db.details.update(
+{_id:ObjectId("59674d042d3c9f0011330fcd")},
+{$set: {"projectInfo.projectName": "AccSpec_MessageTemplate_Prj_DND"}}
+)
+
+
+mongodump -h %host%:27017 -d %%d --authenticationDatabase admin -u %dbusername% -p %password% --out %mypath%\tmp\
+
+
+db.metadata.find({"_id" : ObjectId("596dcead3fab4d00110a4bd6")},{status:1}).pretty();
+db.metadata.update({_id:ObjectId("596dcead3fab4d00110a4bd6")},{$set:{"status":"UPLOADED"}})
+
+596db1c695ad160010670c68
+57f65f8ca560310015797bae
+
+db.FilingAdmininstration.find({FilePath:"filingadminstration/Schemas"}).count();
+
+db.FilingAdmininstration.find({"FilePath":{$regex: /.*filingadminstration.*/}});
+
+db.FilingAdmininstration.find({FilePath:/filingadministration/}).count();
+
+db.customer.find({name:/paneer/})
+
+1. Best way to create a member in replica set
+2. Standalone votes in replciation
+3. MMAPV1 what level of locking
+4. WT compression methods
+5. Index: 3 fields options
+6. Oplog entries count for each operation
+7. CRUD : lt:3,gt:5, a:[4,7],a[3,9],a[2,4]
+8. Sharding: Low cardtinolity field: 1. Date 2. Flag  3. _id 
+
+
+https://npslite-nsdl.com/CRAlite/grievanceSub.do
+
+594d59be-53ff-48e3-b8a2-cc8e0f846760
+
+MMTLUCO_NR
+SPLOFFER
+
+
+srinisrijapavithra@gmail.com
+
+
+db.metadata.distinct( "status", { projectId: "596c654495ad160010670471" } );
+
+10.231.173.187
+	
+mongo --host 10.231.173.187:27017
+
+mongodump -h mgd-us2d-mgs-1a.adminsys.mrll.com:27017 -d docMetadata --authenticationDatabase admin -u readOnly -p j@vd3v --out %tmp%
+mongorestore --host 10.231.172.89:27017 --db docMetadata --drop %tmp%\docMetadata
+
+db.metadata.find({projectId:"58e24cee11cf7b000e458c3e"});
+
+db.metadata.find({projectId:"58e24cee11cf7b000e458c3e",name:"jack11"}).count();
+
+db.metadata.find({projectId:"58e24cee11cf7b000e458c3e"}).count();
+
+db.metadata.update(
+{"projectId" : "58e24cee11cf7b000e458c3e","_id" : ObjectId("5988389d9d385f00173fd151")},
+{$set: {"downloadOnly": false}}
+);
+
+
+
+
+db.details.update(
+{_id:ObjectId("59674d042d3c9f0011330fcd")},
+{$set: {"projectInfo.projectName": "AccSpec_MessageTemplate_Prj_DND"}}
+)
+
+db.metadata.find({"projectId" : "58e24cee11cf7b000e458c3e","_id" : ObjectId("5988389d9d385f00173fd151")} ,{downloadOnly:1});
+
+1894
+
+mongoexport --port 27017 -u readOnly -p 'j@vd3v' --authenticationDatabase admin --db userDetails --collection userDocument --type=csv --out /home/109757/userDetailsId.csv --query '{projectId:"591b49796e65f10010a423c6"}' --fields metadataId
+
+db.userDocument.remove({
+projectId:"591b49796e65f10010a423c6",
+metadataId:{$nin:["597a48b2e25ef40010f261d7","5984ad6b3b06190016b56abb","5989a67858a6bd0010dad1b5","5989a87958a6bd0010dad21f","5989a87ab5c7fa0015377b1b",
+"5989a87af734b900157b044a","5989a87af734b900157b044c","5989a87a58a6bd0010dad226","597a48b22af8f9001739df68","597a48b32af8f9001739df6a","59838cffba18450014c392c0",
+"5984ad6b3540af0015f70323","5989a678b5c7fa0015377abf","597a29ccc4dc870012904d0b"]}
+});                
+
+
+12000
+
+9
+db.metadata.find({ "_id": ObjectId("598ab4586dfb0c0015516c2a"),projectId:"58e24cee11cf7b000e458c3e"},{processes:1});
+
+
+db.metadata.update(
+{ "_id": ObjectId("598ab4586dfb0c0015516c2a"),projectId:"58e24cee11cf7b000e458c3e"},
+{$push :{ "processes" : {}}}
+)
+
+
+mongodump -h mgd-us2d-mgs-1a.adminsys.mrll.com:27017 -d docMetadata -c metadata --authenticationDatabase admin -u readOnly -p j@vd3v --out %tmp%
+mongorestore --host localhost:27017 --db docMetadata --drop %tmp%\docMetadata
+
+
+ db.metadata.find({"access.accessLevel":"MANAGE"},{"access.accessLevel":1});
+
+ 
+ 
+ db.metadata.find({_id:ObjectId("59941ced6d00a00010929e49")},{"processes.status":1});
+ db.metadata.find({_id:ObjectId("57f6782428da0700135f8844")},{"processes.status":1});
+ 
+ db.metadata.find({},{"processes.status":1});
+ 
+ 
+db.metadata.update(
+{"_id":ObjectId("57f6782428da0700135f8844"),"processes.status":{$ne:"PROCESSING"}},
+{$set:{"processes.$.status":"PROCESSING"}},
+{ "multi": true }
+); 
+ 
+ 
+ 
+db.metadata.update(
+{"_id": ObjectId("59941ced6d00a00010929e49")},
+{$set :{ "processes.0.status" : "TODO"}}
+) 
+
+db.metadata.update(
+{"_id": ObjectId("59941ced6d00a00010929e49")},
+{$set :{ "status" : "PROCESSING"}}
+) 
+
+ModifiedBy, IsActive,  FileType,  FileName,  FilePath,  FileVersionNumber, ChildDocuments, Status
+
+
+mongoexport --port 27017 -u readOnly -p 'j@vd3v' --authenticationDatabase admin  --db filingServices --collection FilingAdministration --type=csv --out /home/109757/FillingAdministration.csv --fields ModifiedBy,IsActive,FileType,FileName,FilePath,FileVersionNumber,ChildDocuments,Status
+
+db.FillingAdministration.update(
+{Status:"NeedsConversion",FileType:"Form"},
+{$set :{ "Status" : "Active"}}
+) 
+
+mongodump -h mgd-us2d-mgs-1a.adminsys.mrll.com:27017 -d docMetadata --authenticationDatabase admin -u readOnly -p j@vd3v --out %tmp%
+mongorestore --host localhost:27017 --db docMetadata --drop %tmp%\docMetadata
+mongorestore --host 10.231.173.187:27017 --db docMetadata --drop %tmp%\docMetadata
+
+
+591b49796e65f10010a423c6 
+
+
+
+Priority: 0 -> To prevent the secondary become the primary
+
+
+
+Hi, please share the following transaction details with us
+Name- Jagadeesan G
+Issue faced Date & Time of the transaction- 25-08-2017
+Transaction ID- 723722385755
+Payer bank- ICICI
+Payee bank- Kotak Mahindra Bank
+Registered mobile number- 9884194041
+Amount- 2000
+
+
+
+db.metadata.find({"_id": ObjectId("59707ec1db8b2500160f060e")},{status:1})
+) 
+
+db.metadata.update(
+{"_id": ObjectId("59707ec1db8b2500160f060e")},
+{$set :{ "status" : "UPLOADED"}}
+) 
+
+mongodump -h mgd-us2d-mgs-1a.adminsys.mrll.com:27017 -d docMetadata -c metadata --authenticationDatabase admin -u readOnly -p j@vd3v --out %tmp%
+mongorestore --host 10.231.172.89:27017 --db docMetadata --drop %tmp%\docMetadata
+
+3500
+2000
+ 500
+
+ 
+ 
+db.metadata.find({
+"_id" : { "$in" : [ObjectId(""),ObjectId("") ]}
+});
+
+
+db.createUser(
+
+)
+
+Administrator:
+db.createUser(
+  {
+    user: "OMSUserAdmin",
+    pwd: "OmS@1234",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+
+Application
+db.createUser(
+  {
+    user: "OmsReadWrite",
+    pwd: "OMS1234",
+    roles: [ { role: "readWrite", db: "OMS" } ]
+  }
+)
+
+
+db.createUser(
+  {
+    user: "OmsReadWrite",
+    pwd: "OMS1234",
+    roles: [ { role: "readWrite", db: "OMS" } ]
+  }
+)
+
+db.changeUserPassword("OmsReadWrite","OMS1234");
+
+
+OMSAdmin
+OMS1234
+
+
+OMS:
+
+mongo --host 10.231.173.31:27017 -u OmsReadWrite -p OMS1234 --authenticationDatabase admin
+
+var customer=[{name:"Jack",type:"Customer",created_date:now()}]
+
+
+
+db.details.find({_id:ObjectId("59f153de99ee9300141c2b8b")});
+db.projectMembership.find({"userId":"59f153de99ee9300141c2b8b"})
+
+59438f28c4377600107df66a
+
+db.details.find({emailAddress:"kumar1@mailinator.com"}).pretty();
+db.projectMembership.find({userId:"8b647700-a423-4287-bdfd-7d56a9431ebd"});
+
+
+
+
+db.details.find({emailAddress:"locktest@email.com"});
+db.details.find({_id:"06593946-d22c-4642-9b21-7075ddcfa5bf"});
+db.projectMembership.find({projectId:"57d99535e5e04fce6528a667"});
+06593946-d22c-4642-9b21-7075ddcfa5bf
+
+db.metadata.find({"projectId" : "57d99535e5e04fce6528a667",userId:"06593946-d22c-4642-9b21-7075ddcfa5bf"}).pretty();
+db.metadata.find({"projectId" : "57d99535e5e04fce6528a667"}).pretty();
+db.metadata.find({"_id" : ObjectId("59f559c0ab29fb00134cb789")}).pretty();
+
+
+598458cf58ec080015a66302
+db.projectMembership.find({projectId:"598458cf58ec080015a66302"});
+db.metadata.find({_id:ObjectId("5a030085b67df0000e03c63b")});
+
+
+grep -Ril "59cac5f3db0472000ffa11b2" /var/log/mongodb/mongod.log 
+
+grep -Ril "59cac5f3db0472000ffa11b2" /
+
+ObjectId("5a01f18c2caf21000edc9fc0").getTimestamp()
+
+
+db.system.profile.find({
+"query.projectId":"5a01f16807d3140014688ef2",
+'op':'remove'}
+).count();
+
+
+db.system.profile.find({
+"query.projectId":"5a01f16807d3140014688ef2"}
+).count();
+
+db.system.profile.find().sort({ts:-1}).limit(1);
+
+Print First Line and Last line
+sed -n '1p;$p' mongod.log.10
+
+
+
+
+db.tmpAccessDetail.find().forEach(
+
+
+db.test.find().sort({_id:1}).forEach((function(result){
+var id=result._id;
+printjson(id.getTimestamp()+" - "+ id);
+}))
+
+db.details.find({_id:"0e571959-5963-4a61-aabe-f4d8f66cd28e"});
+
+maksoloshenko@mailinator.com
+
+dataIntegrity@projects
+10.238.80.51:36422
+
+db.metadata.find(
+{_id:ObjectId("5a546cede21470000e7c0dd6")});
+
+db.metadata.find({"_id":ObjectId("5a546cede21470000e7c0dd6")},{docId:1,_id:0});
+
+
+db.metadata.update(
+{_id:ObjectId("5a546cede21470000e7c0dd6")},
+{$set: {"docId": "79ef1063-a084-4aa9-af69-19b388ca93e5"}}
+)
+
+db.metadata.update(
+{_id:ObjectId("5a546cede21470000e7c0dd6")},
+{$set: {"docId": "fe971063-a084-4aa9-af69-19b388ca93e5"}}
+)
+
+fe971063-a084-4aa9-af69-19b388ca93e5
+
+db.system.profile.findOne({"ns":"docMetadata.project_lock"});
+
+
+ "value" : "I am being granted access to the information contained on this site in order to review certain information of Project Test Automation 95065017bd5d4c30a8b037f8d9dc5bf7 or their affiliates. I understand that my access to this site is subject to the following conditions : All of the information contained on this site is considered confidential, and is subject to the Confidentiality Agreement entered into between Project Test Automation 95065017bd5d4c30a8b037f8d9dc5bf7 and the company that I represent. I will maintain the information in confidence and will not disclose any of the information to others except as expressly permitted by the Confidentiality Agreement.I will not attempt to download, scan, copy, print or otherwise capture any of the information contained on the site, except that I may view, print or download information for which the view, print or download capability has been enabled as indicated by the site index. I will not attempt to circumvent any of the security features of the site, and will not enable or allow others to access the site using my authorization to the site. The information on this site has been prepared to assist interested parties in making their own evaluation of a prospective transaction with Project Test Automation 95065017bd5d4c30a8b037f8d9dc5bf7, and Project Test Automation 95065017bd5d4c30a8b037f8d9dc5bf7 does not represent the information as being all-inclusive or to contain all information that may be desirable or required in order to properly evaluate a potential transaction.I understand that Project Test Automation 95065017bd5d4c30a8b037f8d9dc5bf7 is making no representations or warranties, express or implied, as to the accuracy or completeness of the information, and that Project Test Automation 95065017bd5d4c30a8b037f8d9dc5bf7 will have no liability with respect to any use or reliance upon any of the information.By clicking on the I Accept button below, I acknowledge that I have read, understand, and agree to the above conditions.",
+
+ 
+ 
+ db.details.find({"emailAddress":"locktest@email.com"});
+ db.unRegisteredUser.find({"emailAddress":"locktest@email.com"});
+
+ db.details.findOne({"_id":ObjectId("5a5eec8d56694d000eb43c79")});
+ 
+ 
+  db.details.find({"_id":{ "$in":[
+  ObjectId("5a146fc663bde1000eef3817"),
+  ObjectId("5a146fc663bde1000eef3815"),
+  ObjectId("5a146fc609ccd300122548b3"),
+  ObjectId("5a146fc663bde1000eef3816"),
+  ObjectId("5a146fc609ccd300122548b2"),
+  ObjectId("5a1461b609ccd3001225488d"),
+  ObjectId("5a1461b509ccd3001225488c"),
+  ObjectId("5a1461b509ccd3001225488b")
+]}},{"projectInfo.projectName":1});
+  
+  
+ 
+ db.details.find({"_id":"f2adad3e-0675-482f-8a7c-afca971c64e4"});
+ 
+ 
+ db.details.find({"_id":{ "$in":["05d47c7e-e9d7-47f3-9ad4-c08a13b4fb9f","08352bdb-18db-4934-8d07-49ee8cd38125","0e571959-5963-4a61-aabe-f4d8f66cd28e","1c49e185-20e4-42bf-9a85-b83f7f3164df",
+"1fcd6e65-c2f3-4798-b244-7998e766b855","30ef5999-82c8-4093-9b42-94798025767c","3762446c-95ae-4649-8c85-eaa87202141f","592638dd-c29c-4efe-936a-c45cb3c5cb11",
+"634d39f0-a196-4fae-91c6-1999f2694884","7d6ba82f-00fe-4d7f-a261-f79e6ad0ef19","7de05d38-6dd9-4904-b9eb-4e0cd3e76c09","90de9289-5d6f-4ae1-898f-1fd53867735d",
+"9cfa4c14-affa-4d29-a005-270a324fbc2b","9d169e50-ed35-4f3c-ab41-7975e505e207","9fd5cec5-076d-4321-9d9e-6a55ff7e72ae","a1985c73-1421-4ce1-b3e4-1eea48db6899",
+"a7761abe-3883-443f-a08c-bb7f3b26d33f","ab99422a-b051-4f7c-8970-e25bd61ed32c","bfc32477-91d9-4e8c-af44-1b1cac0a1bec","d1853a4a-aad6-410a-9b0d-5350c722a88d",
+"e9d0b0ee-7a80-4a15-be7b-f54916ec6d54","f2adad3e-0675-482f-8a7c-afca971c64e4"]}},{emailAddress:1});
+ 
+ 
+{ "_id" : "05d47c7e-e9d7-47f3-9ad4-c08a13b4fb9f", "emailAddress" : "c7984eaf2b16474a8f9b26ec8@mailinator.com" }
+{ "_id" : "08352bdb-18db-4934-8d07-49ee8cd38125", "emailAddress" : "apitest1@mailinator.com" }
+{ "_id" : "0e571959-5963-4a61-aabe-f4d8f66cd28e", "emailAddress" : "maksoloshenko@mailinator.com" }
+{ "_id" : "1c49e185-20e4-42bf-9a85-b83f7f3164df", "emailAddress" : "maxissuperagain@mailinator.com" }
+{ "_id" : "1fcd6e65-c2f3-4798-b244-7998e766b855", "emailAddress" : "5857d6818954425d90d4d67c3@mailinator.com" }
+{ "_id" : "30ef5999-82c8-4093-9b42-94798025767c", "emailAddress" : "apitest3@mailinator.com" }
+{ "_id" : "3762446c-95ae-4649-8c85-eaa87202141f", "emailAddress" : "838cb8b77cb04a098aa785af4@mailinator.com" }
+{ "_id" : "592638dd-c29c-4efe-936a-c45cb3c5cb11", "emailAddress" : "a6a4ff86bf35427da1108a655@mailinator.com" }
+{ "_id" : "634d39f0-a196-4fae-91c6-1999f2694884", "emailAddress" : "qwerfdsa@mailinator.com" }
+{ "_id" : "7d6ba82f-00fe-4d7f-a261-f79e6ad0ef19", "emailAddress" : "agreggation@mailinator.com" }
+{ "_id" : "7de05d38-6dd9-4904-b9eb-4e0cd3e76c09", "emailAddress" : "lkjhgfds@mailinator.com" }
+{ "_id" : "90de9289-5d6f-4ae1-898f-1fd53867735d", "emailAddress" : "zxcvfdsa@mailinator.com" }
+{ "_id" : "9cfa4c14-affa-4d29-a005-270a324fbc2b", "emailAddress" : "1502dddb719749acb51749642@mailinator.com" }
+{ "_id" : "9d169e50-ed35-4f3c-ab41-7975e505e207", "emailAddress" : "poiuhjkl@mailinator.com" }
+{ "_id" : "9fd5cec5-076d-4321-9d9e-6a55ff7e72ae", "emailAddress" : "9fc39ebb2f974085a3e98a522@mailinator.com" }
+{ "_id" : "a1985c73-1421-4ce1-b3e4-1eea48db6899", "emailAddress" : "asdfghjk@mailinator.com" }
+{ "_id" : "a7761abe-3883-443f-a08c-bb7f3b26d33f", "emailAddress" : "apitest2@mailinator.com" }
+{ "_id" : "ab99422a-b051-4f7c-8970-e25bd61ed32c", "emailAddress" : "4cb63ab6425745c984d5fc236@mailinator.com" }
+{ "_id" : "bfc32477-91d9-4e8c-af44-1b1cac0a1bec", "emailAddress" : "plkoijhu@mailinator.com" }
+{ "_id" : "d1853a4a-aad6-410a-9b0d-5350c722a88d", "emailAddress" : "fakecountry@mailinator.com" }
+{ "_id" : "e9d0b0ee-7a80-4a15-be7b-f54916ec6d54", "emailAddress" : "apitest4@mailinator.com" }
+
+ 
+ 
+ 
+ 
+ 
+{ "userId" : "05d47c7e-e9d7-47f3-9ad4-c08a13b4fb9f", }
+{ "userId" : "08352bdb-18db-4934-8d07-49ee8cd38125", }
+{ "userId" : "0e571959-5963-4a61-aabe-f4d8f66cd28e", }
+{ "userId" : "1c49e185-20e4-42bf-9a85-b83f7f3164df", }
+{ "userId" : "1fcd6e65-c2f3-4798-b244-7998e766b855", }
+{ "userId" : "30ef5999-82c8-4093-9b42-94798025767c", }
+{ "userId" : "3762446c-95ae-4649-8c85-eaa87202141f", }
+{ "userId" : "592638dd-c29c-4efe-936a-c45cb3c5cb11", }
+{ "userId" : "634d39f0-a196-4fae-91c6-1999f2694884", }
+{ "userId" : "7d6ba82f-00fe-4d7f-a261-f79e6ad0ef19", }
+{ "userId" : "7de05d38-6dd9-4904-b9eb-4e0cd3e76c09", }
+{ "userId" : "90de9289-5d6f-4ae1-898f-1fd53867735d", }
+{ "userId" : "9cfa4c14-affa-4d29-a005-270a324fbc2b", }
+{ "userId" : "9d169e50-ed35-4f3c-ab41-7975e505e207", }
+{ "userId" : "9fd5cec5-076d-4321-9d9e-6a55ff7e72ae", }
+{ "userId" : "a1985c73-1421-4ce1-b3e4-1eea48db6899", }
+{ "userId" : "a7761abe-3883-443f-a08c-bb7f3b26d33f", }
+{ "userId" : "ab99422a-b051-4f7c-8970-e25bd61ed32c", }
+{ "userId" : "bfc32477-91d9-4e8c-af44-1b1cac0a1bec", }
+{ "userId" : "d1853a4a-aad6-410a-9b0d-5350c722a88d", }
+{ "userId" : "e9d0b0ee-7a80-4a15-be7b-f54916ec6d54", }
+{ "userId" : "f2adad3e-0675-482f-8a7c-afca971c64e4" }
+
+
+
+{
+        "op" : "remove",
+        "ns" : "docMetadata.project_lock",
+        "query" : {
+                "projectId" : "595e53c9bf2e2a0010a43a68"
+        },
+        "keysExamined" : 1,
+        "docsExamined" : 1,
+        "ndeleted" : 1,
+        "keysDeleted" : 3,
+        "numYield" : 0,
+        "locks" : {
+                "Global" : {
+                        "acquireCount" : {
+                                "r" : NumberLong(2),
+                                "w" : NumberLong(2)
+                        }
+                },
+                "Database" : {
+                        "acquireCount" : {
+                                "w" : NumberLong(2)
+                        }
+                },
+                "Collection" : {
+                        "acquireCount" : {
+                                "w" : NumberLong(1)
+                        }
+                },
+                "Metadata" : {
+                        "acquireCount" : {
+                                "w" : NumberLong(1)
+                        }
+                },
+                "oplog" : {
+                        "acquireCount" : {
+                                "w" : NumberLong(1)
+                        }
+                }
+        },
+        "millis" : 0,
+        "planSummary" : "IXSCAN { projectId: 1 }",
+        "execStats" : {
+                "stage" : "DELETE",
+                "nReturned" : 0,
+                "executionTimeMillisEstimate" : 0,
+                "works" : 2,
+                "advanced" : 0,
+                "needTime" : 1,
+                "needYield" : 0,
+                "saveState" : 0,
+                "restoreState" : 0,
+                "isEOF" : 1,
+                "invalidates" : 0,
+                "nWouldDelete" : 1,
+                "nInvalidateSkips" : 0,
+                "inputStage" : {
+                        "stage" : "FETCH",
+                        "nReturned" : 1,
+                        "executionTimeMillisEstimate" : 0,
+                        "works" : 2,
+                        "advanced" : 1,
+                        "needTime" : 0,
+                        "needYield" : 0,
+                        "saveState" : 1,
+                        "restoreState" : 1,
+                        "isEOF" : 1,
+                        "invalidates" : 0,
+                        "docsExamined" : 1,
+                        "alreadyHasObj" : 0,
+                        "inputStage" : {
+                                "stage" : "IXSCAN",
+                                "nReturned" : 1,
+                                "executionTimeMillisEstimate" : 0,
+                                "works" : 2,
+                                "advanced" : 1,
+                                "needTime" : 0,
+                                "needYield" : 0,
+                                "saveState" : 1,
+                                "restoreState" : 1,
+                                "isEOF" : 1,
+                                "invalidates" : 0,
+                                "keyPattern" : {
+                                        "projectId" : 1
+                                },
+                                "indexName" : "projectId_1",
+                                "isMultiKey" : false,
+                                "multiKeyPaths" : {
+                                        "projectId" : [ ]
+                                },
+                                "isUnique" : true,
+                                "isSparse" : false,
+                                "isPartial" : false,
+                                "indexVersion" : 2,
+                                "direction" : "forward",
+                                "indexBounds" : {
+                                        "projectId" : [
+                                                "[\"595e53c9bf2e2a0010a43a68\", \"595e53c9bf2e2a0010a43a68\"]"
+                                        ]
+                                },
+                                "keysExamined" : 1,
+                                "seeks" : 1,
+                                "dupsTested" : 0,
+                                "dupsDropped" : 0,
+                                "seenInvalidated" : 0
+                        }
+                }
+        },
+        "ts" : ISODate("2018-01-17T09:27:33.867Z"),
+        "client" : "10.238.10.12",
+        "allUsers" : [
+                {
+                        "user" : "__system",
+                        "db" : "local"
+                }
+        ],
+        "user" : "__system@local"
+}
+
+
+ISODate("2018-01-17T09:30:57.363Z")
+
+{ "_id" : ObjectId("5a5f17b6457848000ea40400"), "projectId" : "59b16a1ef87fe2000ea8e810", "owner" : "filescan-acc-dev-boss@mailinator.com", "action" : "Not Specified", "expires" : NumberLong("1516181730352"), "locked" : NumberLong("1516181430352"), "lockingHitId" : "file-scan-acc-c6020553-d8d4-4200-9645-c19a63048083", "expireDate" : ISODate("2018-01-17T09:35:30.352Z") }
+
+db.system.profile.find(
+{
+"ns":"docMetadata.project_lock",
+"query.projectId" : "59b16a1ef87fe2000ea8e810"
+}
+);
+
+db.details.findOne({_id:ObjectId("59b16a1ef87fe2000ea8e810")});
+
+mongodump -h mgd-us2p-mgs-1a.dmz01.mrll.com:27017 -d docMetadata -c contentAccessGroup --authenticationDatabase admin -u readOnly -p pr0dd3v --out C:\Jagadeesan\mongo\prod\200218\
+
+
+mongodump -h mgd-us2p-gd-1a.dmz01.mrll.com:27017 -d userDetails -c details --authenticationDatabase admin -u readOnly -p pr0dd3v --out C:\Jagadeesan\mongo\prod\200218\
+
+mgd-us2p-gd-1a.dmz01.mrll.com
+
+
+mongorestore --port 27018 --db prodreview --drop C:\Jagadeesan\mongo\prod\200218\docMetadata
+mongorestore --port 27018 --db prodreview --drop C:\Jagadeesan\mongo\prod\200218\userDetails
+
+C:\Jagadeesan\mongo\prod\data\db\
+
+
+db.projectMembership.find({},{contentAccessGroupId:1}).forEach(function(docProjMember){
+var cotentAccessGroupId=docProjMember.contentAccessGroupId;
+var contentAccessMemberCount=0;
+
+db.projectMembership.find({contentAccessGroupId:cotentAccessGroupId}).forEach(function(docProjMemberCount){
+contentAccessMemberCount=docProjMemberCount.length;
+});
+
+}); 
+
+
+db.projectMembership.find({contentAccessGroupId:cotentAccessGroupId}).forEach(function(docProjMemberCount){
+contentAccessMemberCount=docProjMemberCount.length;
+});
+
+
+db.tempCount.insert({contentAccGrpId:cotentAccessGroupId,MemberCount:contentAccessMemberCount});
+	
+db.projectMembership.aggregate([ 
+{$group:{_id:{"contentAccessGroupId" : "$contentAccessGroupId"},uniqueCount: {$addToSet: "$userId"}}},
+{$project:{"contentAccessGroupId":1,uniqueCustomerCount:{$size:"$uniqueCount"}} }, 
+{ $out : "distinctCntAccGrp" }
+]);
+	
+db.distinctCntAccGrp.find().forEach(function(docProjMember){
+var contentAccessGroupId=docProjMember._id.contentAccessGroupId;
+print(contentAccessGroupId);
+db.contentAccessGroup.find({_id:ObjectId(contentAccessGroupId)}).forEach(function(docType){
+	var type=docType.type;
+});
+
+});
+	
+	
+	db.finaldistinctCntAccGrp.insert({contentAccessGroupId:contentAccessGroupId,userCount:docProjMember.uniqueCustomerCount,usertype:type});
+	db.distinctCntAccGrp.find({},{"_id.contentAccessGroupId":1});
+	db.projectMembership.find({"contentAccessGroupId":{$regex: /.*unknows.*/}}).count();
+	
+	
+db.contentAccessGroup.find({type:"REVIEWER"}).forEach(function(doc){
+var cntGroupId=doc._id.str;
+var prjId=doc.projectId;
+var userCountCounter = 0;
+db.projectMembership.find({"contentAccessGroupId":cntGroupId,projectId:prjId}).forEach(function(docCount){
+userCountCounter++;
+})
+db.tmpFinal.insert({projectId:prjId,contentAccessGroupId:cntGroupId,userCount:userCountCounter,type:"REVIEWER"});
+});
+
+
+
+
+db.tmpFinal.aggregate([
+{
+$project: {userCount{ $sum: "$userCount"}}
+}
+])
+
+db.tmpFinal.aggregate(
+   [
+     {
+       $group:
+         {           
+           totalAmount: { $sum: "$userCount" },
+           count: { $sum: 1 }
+         }
+     }
+   ]
+)
+
+db.details.aggregate(
+   [
+     {
+       $group:
+         {           
+           state: { "$userCount" },
+           
+         }
+     }
+   ]
+)
+
+db.tmpFinal.aggregate([ 
+  {
+  $group: {
+    _id: null, 
+    total: {
+      $sum: "$userCount"
+    }
+  }
+}
+]);
+
+db.projectMembership.find({"contentAccessGroupId":"582490e5db9bb3001ae43a19"}).count();
+
+mongoexport 
+--port 27018 
+--db prodreview 
+--collection tmpFinal 
+--type=csv 
+--out C:/Jagadeesan/mongo/prod/200218/review.csv 
+--fields projectId,contentAccessGroupId,userCount,type
+
+	
+
+db.metadata.findOne({_id:ObjectId("5a262f4b1325bf000e972330")});
+	
+	
+	
+mongod --replSet shard0 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\singleReplicaSet\p --logpath C:\Jagadeesan\mongo\singleReplicaSet\p\mongod.log --port 27107 --oplogSize 10 --bind_ip localhost 
+
+mongod --replSet shard0 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\singleReplicaSet\s1 --logpath C:\Jagadeesan\mongo\singleReplicaSet\s1\mongod.log --port 27108 --oplogSize 10 --bind_ip localhost 
+
+mongod --replSet shard0 --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\singleReplicaSet\s2 --logpath C:\Jagadeesan\mongo\singleReplicaSet\s2\mongod.log --port 27109 --oplogSize 10 --bind_ip localhost --shardsvr
+
+
+db.metadata.find({projectId:"5aba0db9e161340014701785"}).toArray(); 
+db.metadata.count({projectId:"5aba0db9e161340014701785"});
+
+
+
+
+Find Fileroom files:
+
+db.metadata.find(
+{projectId:"5a24dd00ef653e000e94964a",
+"index":{$regex: /^35./} 
+},
+{_id:1}
+)
+
+07358836236
+
+
+
+db.details.find({
+$set:{projectInfo.active:false}
+_id:ObjectId("5a24dd00ef653e000e94964a")
+});
+
+db.details.find({"projectInfo.salesforceProjectId":"5a876300a7064e000fd52643"});
+
+
+db.details.find({"projectConfigurations.settingName":"officeOnlineEnabled","projectConfigurations.value":"false"});
+
+db.details.find({projectConfigurations:{settingName:"officeOnlineEnabled",value:"false"}});
+
+
+db.details.findOne({_id:ObjectId("5912ad2b527e76001001a0c1"),
+"projectConfigurations.settingName":"officeOnlineEnabled"});
+
+
+db.details.update(
+{_id:ObjectId("5912ad2b527e76001001a0c1"),
+projectConfigurations: { $elemMatch:{"settingName":"officeOnlineEnabled","value":"true"}}},
+{$set:{"projectConfigurations.$.value": "false" }})
+
+
+Dispute - 
+
+1500/1000
+
+security:
+  keyFile: /etc/global-keyfile
+  authorization: enabled
+  
+auditLog:
+   destination: file
+   format: JSON
+   path: /var/log/mongodb/auditLog.json
+ 
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongod.pid
+
+operationProfiling:
+   mode: "all"
+   
+ 
+mongodump -h mgd-us2d-gd-1a.adminsys.mrll.com:27017 -d projects -c details --authenticationDatabase admin -u readOnly -p j@vd3v --out %tmp%
+mongorestore --host localhost:27017 --db projects --drop %tmp%\projects
+
+mgd-stage-pas-1a.adminsys.mrll.com - P
+mgd-stage-pas-1b.adminsys.mrll.com - S1
+mgd-stage-pas-1c.adminsys.mrll.com - S2
+
+netstat -ntpl
+
+
+sudo iptables -I INPUT -p tcp -m tcp --dport 27017 -j ACCEPT
+
+rs.add("mgd-stage-pas-1b.adminsys.mrll.com:27017");
+
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A OUTPUT -o lo -j ACCEPT
+
+
+Primary:
+
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+  logRotate: reopen
+
+storage:
+  dbPath: /var/lib/mongodb
+  journal:
+    enabled: true
+
+net:
+  port: 27017
+  compression:
+    compressors: "snappy"
+
+replication:
+  oplogSizeMB: 20480
+  replSetName: "pas_stage"
+
+   
+Secondary 1:
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+  logRotate: reopen
+
+auditLog:
+   destination: file
+   format: JSON
+   path: /var/log/mongodb/auditLog.json
+
+storage:
+  dbPath: /var/lib/mongodb
+  journal:
+    enabled: true
+
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongod.pid
+
+net:
+  port: 27017
+  compression:
+    compressors: "snappy"
+
+security:
+  keyFile: /etc/global-keyfile
+  authorization: enabled
+
+replication:
+  oplogSizeMB: 20480
+  replSetName: global_dev
+
+
+  
+cfg = rs.conf()
+cfg.members[0].priority = 1
+cfg.members[1].priority = 0.5
+cfg.members[2].priority = 0.75
+rs.reconfig(cfg)
+
+
+
+
+
+db.createUser(
+   {
+     user: "readWrite",
+     pwd: "JIj&(jHi&KnGI(",
+	 roles: [ { role: "readWrite", db: "mpedb" } ]     
+   }
+)
+
+
+db.createUser(
+   {
+     user: "readOnly",
+     pwd: "Ml(^KbO&*6)",
+	 roles: [ { role: "read", db: "mpedb" } ]     
+   }
+)
+mongo --authenticationDatabase admin -u admin -p 'a!d@m#i$n%' --host mgd-stage-pas-1a.adminsys.mrll.com
+mongo --authenticationDatabase admin -u admin -p 'a!d@m#i$n%' --host mgd-stage-pas-1b.adminsys.mrll.com
+mongo --authenticationDatabase admin -u admin -p 'a!d@m#i$n%' --host mgd-stage-pas-1c.adminsys.mrll.com
+
+
+JIj&(jHi&KnGI(
+
+
+
+Mongo Replication Commands:
+rs.add()
+rs.addArb()
+rs.conf()
+rs.freeze() 
+rs.help()
+rs.initiate()
+rs.printReplicationInfo()
+rs.printSlaveReplicationInfo()
+rs.reconfig()
+rs.remove()
+rs.slaveOk()
+rs.status()
+rs.stepDown()
+rs.syncFrom()
+
+Mongo Sharding Commands:
+sh.addShard()                                 
+sh.addShardTag()                                 
+sh.addShardToZone()                                 
+sh.addTagRange()                                 
+sh.disableBalancing()                                 
+sh.enableBalancing()                                 
+sh.disableAutoSplit                                 
+sh.enableAutoSplit                                 
+sh.enableSharding()                                 
+sh.getBalancerHost()                                 
+sh.getBalancerState()                                 
+sh.removeTagRange()                                 
+sh.removeRangeFromZone()                                 
+sh.help()                                 
+sh.isBalancerRunning()                                 
+sh.moveChunk()                                 
+sh.removeShardTag()                                 
+sh.removeShardFromZone()                                 
+sh.setBalancerState()                                 
+sh.shardCollection()                                 
+sh.splitAt()                                 
+sh.splitFind()                                 
+sh.startBalancer()                                 
+sh.status()                                 
+sh.stopBalancer()                                 
+sh.waitForBalancer()                                 
+sh.waitForBalancerOff()                                 
+sh.waitForPingChange()                                 
+sh.updateZoneKeyRange()                                 
+
+Collection level Methods:
+db.collection.aggregate()
+db.collection.bulkWrite()
+db.collection.copyTo()
+db.collection.count()
+db.collection.createIndex()
+db.collection.createIndexes()
+db.collection.dataSize()
+db.collection.deleteOne()
+db.collection.deleteMany()
+db.collection.distinct()
+db.collection.drop()
+db.collection.dropIndex()
+db.collection.dropIndexes()
+db.collection.ensureIndex()
+db.collection.explain()
+db.collection.find()
+db.collection.findAndModify()
+db.collection.findOne()
+db.collection.findOneAndDelete()
+db.collection.findOneAndReplace()
+db.collection.findOneAndUpdate()
+db.collection.getIndexes()
+db.collection.getShardDistribution()
+db.collection.getShardVersion()
+db.collection.group()
+db.collection.insert()
+db.collection.insertOne()
+db.collection.insertMany()
+db.collection.isCapped()
+db.collection.latencyStats()
+db.collection.mapReduce()
+db.collection.reIndex()
+db.collection.remove()
+db.collection.renameCollection()
+db.collection.replaceOne()
+db.collection.save()
+db.collection.stats()
+db.collection.storageSize()
+db.collection.totalIndexSize()
+db.collection.totalSize()
+db.collection.update()
+db.collection.updateOne()
+db.collection.updateMany()
+db.collection.watch()
+db.collection.validate()
+
+
+Cursor Level Methods:
+cursor.addOption()
+cursor.batchSize()
+cursor.close()
+cursor.isClosed()
+cursor.collation()
+cursor.comment()
+cursor.count()
+cursor.explain()
+cursor.forEach()
+cursor.hasNext()
+cursor.hint()
+cursor.isExhausted()
+cursor.itcount()
+cursor.limit()
+cursor.map()
+cursor.max()
+cursor.maxScan()
+cursor.maxTimeMS()
+cursor.min()
+cursor.next()
+cursor.noCursorTimeout()
+cursor.objsLeftInBatch()
+cursor.pretty()
+cursor.readConcern()
+cursor.readPref()
+cursor.returnKey()
+cursor.showRecordId()
+cursor.size()
+cursor.skip()
+cursor.sort()
+cursor.tailable()
+cursor.toArray()
+
+
+Database commands:
+db.adminCommand()
+db.aggregate()
+db.cloneCollection()
+db.cloneDatabase()
+db.commandHelp()
+db.copyDatabase()
+db.createCollection()
+db.createView()
+db.currentOp()
+db.dropDatabase()
+db.eval()
+db.fsyncLock()
+db.fsyncUnlock()
+db.getCollection()
+db.getCollectionInfos()
+db.getCollectionNames()
+db.getLastError()
+db.getLastErrorObj()
+db.getLogComponents()
+db.getMongo()
+db.getName()
+db.getPrevError()
+db.getProfilingLevel()
+db.getProfilingStatus()
+db.getReplicationInfo()
+db.getSiblingDB()
+db.help()
+db.hostInfo()
+db.isMaster()
+db.killOp()
+db.listCommands()
+db.loadServerScripts()
+db.logout()
+db.printCollectionStats()
+db.printReplicationInfo()
+db.printShardingStatus()
+db.printSlaveReplicationInfo()
+db.repairDatabase()
+db.resetError()
+db.runCommand()
+db.serverBuildInfo()
+db.serverCmdLineOpts()
+db.serverStatus()
+db.setLogLevel()
+db.setProfilingLevel()
+db.shutdownServer()
+db.stats()
+db.version()
+
+
+Cache Commands:
+db.collection.getPlanCache()
+PlanCache.clear()
+PlanCache.clearPlansByQuery()
+PlanCache.getPlansByQuery()
+PlanCache.help()
+PlanCache.listQueryShapes()
+
+
+Bulk Commands:
+db.collection.initializeOrderedBulkOp()
+db.collection.initializeUnorderedBulkOp()
+Bulk()
+Bulk.execute()
+Bulk.find()
+Bulk.find.arrayFilters()
+Bulk.find.collation()
+Bulk.find.remove()
+Bulk.find.removeOne()
+Bulk.find.replaceOne()
+Bulk.find.updateOne()
+Bulk.find.update()
+Bulk.find.upsert()
+Bulk.getOperations()
+Bulk.insert()
+Bulk.tojson()
+Bulk.toString()
+
+
+User Commands:
+db.auth()
+db.changeUserPassword()
+db.createUser()
+db.dropUser()
+db.dropAllUsers()
+db.getUser()
+db.getUsers()
+db.grantRolesToUser()
+db.removeUser()
+db.revokeRolesFromUser()
+db.updateUser()
+
+
+Role commands:
+db.createRole()
+db.dropRole()
+db.dropAllRoles()
+db.getRole()
+db.getRoles()
+db.grantPrivilegesToRole()
+db.revokePrivilegesFromRole()
+db.grantRolesToRole()
+db.revokeRolesFromRole()
+db.updateRole()
+
+
+Objects Constructors and Methods:
+BulkWriteResult()
+Date()
+ObjectId
+ObjectId.getTimestamp()
+ObjectId.toString()
+ObjectId.valueOf()
+UUID()
+WriteResult()
+WriteResult.hasWriteError()
+WriteResult.hasWriteConcernError()
+
+Connection Methods:
+connect()
+Mongo()
+Mongo.getDB()
+Mongo.getReadPrefMode()
+Mongo.getReadPrefTagSet()
+Mongo.isCausalConsistency()
+Mongo.setCausalConsistency()
+Mongo.setReadPref()
+Mongo.setSlaveOk()
+Mongo.startSession()
+Session
+SessionOptions
+
+MongoDB Package Components:
+mongod
+mongos
+mongo
+mongodump
+mongorestore
+bsondump
+mongoimport
+mongoexport
+mongostat
+mongotop
+mongoperf
+mongoreplay
+mongoldap
+mongofiles
+install_compass
+
+
+Administrator Commands:
+clean
+clone
+cloneCollection
+cloneCollectionAsCapped
+collMod
+compact
+connPoolSync
+convertToCapped
+copydb
+create
+createIndexes
+currentOp
+drop
+dropDatabase
+dropIndexes
+filemd5
+fsync
+fsyncUnlock
+getParameter
+killCursors
+killOp
+listCollections
+listDatabases
+listIndexes
+logRotate
+reIndex
+renameCollection
+repairCursor
+repairDatabase
+setFeatureCompatibilityVersion
+setParameter
+shutdown
+touch
+
+Diagnosis Commands:
+availableQueryOptions
+buildInfo
+collStats
+connPoolStats
+connectionStatus
+cursorInfo
+dataSize
+dbHash
+dbStats
+diagLogging
+driverOIDTest
+explain
+features
+getCmdLineOpts
+getLog
+hostInfo
+isSelf
+listCommands
+netstat
+ping
+profile
+serverStatus
+shardConnPoolStats
+top
+validate
+whatsmyuri
+
+
+db.projectMembership.find(
+{"projectId" : "59a6e87e400d500015e89240"},
+{"userId" : 1,"status" : 1, "lastModifiedTime" : 1, "lastLoginDate" : 1, "disclaimerAcceptedDate" : 1 }
+).forEach(
+function(result) 
+{
+})
+
+
+
+db.projectMembership.find({"projectId":"59a6e87e400d500015e89240"},{"userId" : 1,"status" : 1, "lastModifiedTime" : 1, "lastLoginDate" : 1,"disclaimerAcceptedDate" : 1}).forEach(function(doc)
+{
+db.details.find({_id:doc.userId},{emailAddress:1,_id:0}).forEach(function(result){
+print(result.emailAddress+","+doc.userId+","+doc.status+","+doc.lastModifiedTime+","+doc.lastLoginDate+","+doc.disclaimerAcceptedDate);
+})
+})
+
+
+
+"ts" : { "$gte" : ISODate("2017-05-29T04:00:00.000Z")},
+"ts" : { "$lte" : ISODate("2017-05-29T05:00:00.000Z")},
+#MDBlocal
+
+500000
+
+db.metadata.find({
+projectId:"5a24dd00ef653e000e94964a",
+type:"F",
+fileType:{$in:["xls","xlsx"]},
+fileSize:{"$gte":"500000"},
+fileSize:{"$lte":"600000"}
+},{name:1,fileSize:1})
+
+var myItems = []
+db.metadata.find({
+projectId:"5a24dd00ef653e000e94964a",
+type:"F",
+fileType:{$in:["xls","xlsx"]}
+},{name:1,fileSize:1}).forEach((function(result){
+if(parseInt(result.fileSize) >= 512000)
+  myItems.push(result.fileSize);
+}))
+printjson(myItems);
+
+
+
+db.test.find().sort({_id:1}).forEach((function(result){
+var id=result._id;
+printjson(id.getTimestamp()+" - "+ id);
+}))
+
+500 to 600 
+1024 to 1.3MB
+2MB to 4MB
+
+
+
+db.metadata.find().forEach(function(data) {
+    db.metadata.update({
+        "_id": data._id        
+    },{
+        "$set": {
+            "fileSize": parseInt(data.fileSize)
+        }
+    });
+})
+
+
+db.projectMembership.find({status:"DRAFT",projectId:"5ae6c4384ac9cd000fa697d7"},{userId:1,_id:0}).forEach(function(doc)
+{
+db.unRegisteredUser.find({_id:doc.userId},{languageCode:1,_id:0}).forEach(function(result){
+print(result.languageCode);
+})
+})
+
+
+db.projectMembership.find({status:"DRAFT",projectId:"5ae6bf9c5a7f9f000e7ba514"},{userId:1,_id:0}).forEach(function(doc)
+{ 
+db.unRegisteredUser.find({_id:ObjectId(doc.userId)},{languageCode:1,emailAddress:1}).forEach(function(result){
+print(result._id+"|"+result.emailAddress+"|"+result.languageCode);
+})
+})
+
+
+db.changeUserPassword("appReadWrite", "NkHbGbYyd67");
+
+Fgj^74F6$f
+appReadWrite
+
+
+
+db.projectMembership.find({projectId:"5a9d1b018d52a00013fb3084 "},{userId:1,_id:0}).forEach(function(doc)
+{ 
+
+db.unRegisteredUser.find({_id:ObjectId(doc.userId)},{languageCode:1,emailAddress:1}).forEach(function(result){
+print(result._id+"|"+result.emailAddress+"|"+result.languageCode);
+})
+
+db.details.find({_id:ObjectId(doc.userId)},{languageCode:1,emailAddress:1}).forEach(function(result){
+print(result._id+"|"+result.emailAddress+"|"+result.languageCode);
+})
+
+})
+
+ 
+ 
+db.projectMembership.find({projectId:"5a9d1b018d52a00013fb3084","userId":{$not:/.*-.*/}},{userId:1,_id:0}).forEach(function(doc)
+{ 
+
+var output1=db.unRegisteredUser.find({_id:ObjectId(doc.userId)},{languageCode:1,emailAddress:1}).forEach(function(result){
+print(result._id+"|"+result.emailAddress+"|"+result.languageCode);
+})
+
+db.details.find({_id:doc.userId},{languageCode:1,emailAddress:1}).forEach(function(result){
+print(result._id+"|"+result.emailAddress+"|"+result.languageCode);
+})
+
+})
+
+
+db.projectMembership.find({projectId:"5a9d1b018d52a00013fb3084","userId":{$not:/.*-.*/}},{userId:1,_id:0}).forEach(function(doc)
+{ 
+db.unRegisteredUser.find({_id:ObjectId(doc.userId)},{languageCode:1,emailAddress:1}).forEach(function(result){
+print(result._id+"|"+result.emailAddress+"|"+result.languageCode);
+})
+})
+
+
+db.projectMembership.find({projectId:"5a9d1b018d52a00013fb3084","userId":{$regex:/.*-.*/}},{userId:1,_id:0}).forEach(function(doc)
+{ 
+db.details.find({_id:doc.userId},{languageCode:1,emailAddress:1}).forEach(function(result){
+print(result._id+"|"+result.emailAddress+"|"+result.languageCode);
+})
+
+})
+
+
+
+db.projectMembership.find({projectId:"5a9d1b018d52a00013fb3084","userId":{$not:/.*-.*/}},{userId:1,_id:0}).forEach(function(doc)
+{ 
+db.unRegisteredUser.find({_id:ObjectId(doc.userId)},{languageCode:1,emailAddress:1}).forEach(function(result){
+//print(result._id+"|"+result.emailAddress);
+dbEmail = db.getSiblingDB('emailHistory');
+dbEmail.emailHistory.find({to:result.emailAddress}).forEach(function(out){
+print(out.to+"|"+out.subject+"|"+out.sentTime);
+})
+})
+})
+
+
+db.projectMembership.find({projectId:"5a9d1b018d52a00013fb3084","userId":{$not:/.*-.*/}},{userId:1,_id:0}).forEach(function(doc)
+{ 
+db.details.find({_id:doc.userId},{languageCode:1,emailAddress:1}).forEach(function(result){
+//print(result._id+"|"+result.emailAddress);
+dbEmail = db.getSiblingDB('emailHistory');
+dbEmail.emailHistory.find({to:result.emailAddress}).forEach(function(out){
+print(out.to+"|"+out.subject+"|"+out.sentTime);
+})
+})
+})
+
+
+M103:
+
+
+
+mongo admin --host localhost:27000 --eval 'db.createUser({user: "m103-admin",pwd: "m103-pass",roles: [{role: "root", db: "admin"}]})'
+mongo --port 27000 --authenticationDatabase admin -u m103-admin -p m103-pass
+
+mongoimport --port 27000 --authenticationDatabase admin -u m103-application-user -p m103-application-pass -d applicationData -c products --path /vagrant/dataset/products.json
+
+db.createUser(
+  {
+    user: "m103-application-user",
+    pwd: "m103-application-pass",
+    roles: [ { role: "readWrite", db: "applicationData" } ]
+  }
+)
+
+
+mongod --port 27000 --bind_ip localhost,192.168.103.100 --dbPath /data/db/ --auth
+
+https://blog.csdn.net/sunbocong/article/details/80018811
+
+
+storage:
+  dbPath: /var/mongodb/db/1
+net:
+  bindIp: 192.168.103.100,localhost
+  port: 27001
+security:
+  authorization: enabled
+  keyFile: /var/mongodb/pki/m103-keyfile
+systemLog:
+  destination: file
+  path: /var/mongodb/db/mongod1.log
+  logAppend: true
+processManagement:
+  fork: true
+replication:
+  replSetName: m103-repl
+vagrant@m103:~$
+
+
+
+db.createUser(
+{
+user: "m103-admin",
+pwd: "m103-pass",
+roles: [ { role: "root", db: "admin" } ]
+}
+)
+
+mongo --port 26001 --authenticationDatabase admin -u m103-admin -p m103-pass 
+
+sharding:
+  clusterRole: configsvr
+replication:
+  replSetName: m103-csrs
+security:
+  keyFile: /var/mongodb/pki/m103-keyfile
+net:
+  bindIp: localhost,192.168.103.100
+  port: 26003
+systemLog:
+  destination: file
+  path: /var/mongodb/db/csrs3/mongod.log
+  logAppend: true
+processManagement:
+  fork: true
+storage:
+  dbPath: /var/mongodb/db/csrs3
+  
+  db.products.createIndex({"regularPrice": 1})
+  db.adminCommand( { shardCollection: "m103.products", key: { regularPrice: 1 } } )
+  
+  
+  db.adminCommand( { shardCollection: "m103.products", key: { shippingWeight: 1 } } )
+  
+  
+  5MB
+
+db.metadata.count({fileSize:{$lt:5120}}) - 2 
+
+db.metadata.count({type:"F",   - 300
+"fileSize" : { "$gte" : 5120},
+"fileSize" : { "$lte" :15360 }
+)
+
+
+
+
+db.metadata.count({type:"F","fileSize" : { "$gt" : 15360}})   - 2905
+
+
+db.metadata.count({type:"F"});
+
+
+db.metadata.remove({"type":{$in:["FR","D","T"]}})
+
+
+db.metadata.find({type:"F"},{fileSize:1}).forEach(function(data) {
+    db.metadata.update({
+        "_id": data._id        
+    }, {
+        "$set": {
+            "fileSize": parseInt(data.fileSize)
+        }
+    });
+})
+
+db.details.update({"_id": "project2"}, {
+$addToSet: {
+"projectConfigurations": {
+$each: [{
+"settingName": "tileWaterMarkEnabled",
+"value": "false",
+"configuration": "watermark"
+}]
+}}
+});
+
+;
+
+db.objectdetails.find({"objecttag" : { "$in" : [ "laptop"]}});
+
+https://university.mongodb.com/exam/guide
+Philosophy & Features: performance, JSON, BSON, fault tolerance, disaster recovery, horizontal scaling, and the Mongo shell
+CRUD: Create, Read, Update, and Delete operations
+Data Modeling: embedding, references, document growth, modeling one-to-one and one-to-many relationships, modeling for atomic operations, modeling tree structures
+Indexing and Performance: single key, compound, multi-key, mechanics, storage engines, and performance
+Aggregation: pipeline, operators, memory usage, sort, skip, and limit
+Replication: configuration, oplog concepts, write concern, elections, failover, and deployment to multiple data centers
+Sharding: components, when to shard, balancing, shard keys, and hashed shard keys
+-------------------------
+
+
+
+
+mongo admin --host jms-in1t-mgd-1a:27017 --eval 'db.createUser({user: "jmspoc",pwd: "jmspoc1234",roles: [{role: "root", db: "admin"}]})'
+
+mongo -u jmspoc -p jmspoc1234 --authenticationDatabase admin
+rs.add("jms-in1t-mgd-1b:27017");
+
+rm -rf abc.txt
+
+db.auth('jmspoc','jmspoc1234');
+
+
+74000
+
+
+
+
+ps -ef|grep mongod 
+
+
+mongodump -h mgd-us2d-gd-1a.adminsys.mrll.com:27017 -d projects --authenticationDatabase admin -u readOnly -p j@vd3v --out %tmp%
+mongorestore --host localhost:27017 --db projects --drop %tmp%\projects
+
+
+
+mongodump -h mgd-us2s-gd-1a.dmz01.mrll.com:27017 -d projects --authenticationDatabase admin -u readOnly -p st@g3d3v --out %tmp%
+mongorestore --host localhost:27017 --db projects_stage --drop %tmp%\projects
+
+
+US
+mongodump -h mgd-us2p-gd-1a.dmz01.mrll.com:27017 -d projects --authenticationDatabase admin -u readOnly -p pr0dd3v --out %tmp%
+mongorestore --host localhost:27017 --db projects_prod_US --drop %tmp%\projects
+
+EU
+mongodump -h mgd-eu2p-gd-1a.adminsys.mrll.com:27017 -d projects --authenticationDatabase admin -u readOnly -p pr0dd3v --out %tmp%
+mongorestore --host localhost:27017 --db projects_prod_EU --drop %tmp%\projects
+
+
+
+
+db.productMasterSettings.update(
+{"settings" : {$elemMatch:{"settingName":"tileWaterMarkEnabled"}}},
+{$set:{"settings.$.defaultValue":"true"}}
+)
+
+db.masterSettings.update({settingName:"tileWaterMarkEnabled"},{$set:{"defaultValue":"true"}});
+
+db.masterSettings.find({settingName: "tileWaterMarkEnabled"},{settingName:1,"defaultValue":1}).toArray();
+db.productMasterSettings.find({"settings.settingName" : "tileWaterMarkEnabled"},{"settings.settingName":1,"settings.defaultValue":1}).toArray()
+
+
+
+
+
+Single ReplicaSet:
+
+mongod --replSet rs1 --dbpath C:\Jagadeesan\mongo\singleReplicaSet\p\ --port 57019 --oplogSize 200 --bind_ip_all
+mongod --replSet rs1 --dbpath C:\Jagadeesan\mongo\singleReplicaSet\s1\ --port 57020 --oplogSize 200 --bind_ip_all
+mongod --replSet rs1 --dbpath C:\Jagadeesan\mongo\singleReplicaSet\s2\ --port 57021 --oplogSize 200 --bind_ip_all
+
+
+
+
+ mongo --port 27017 tilewatermark.js
+
+ 
+ 
+ 
+db.details.find(
+{
+"projectConfigurations" : {$elemMatch:{"settingName":"tileWaterMarkEnabled","value":"false"}},deleted: false},
+{"projectConfigurations.settingName":1,   "projectConfigurations.value":1}
+)
+
+db.details.update({"_id":"project2" ,"projectConfigurations" : {$elemMatch:{"settingName":"tileWaterMarkEnabled"}}}, 
+		{$set:{"projectConfigurations.$.value":"true"}});
+
+
+
+Prod - 2018-08-21T12:56:08.000Z UTC  (06.26 PM IST 21Aug)
+Stage - 2018-08-21T20:05:06.000Z UTC  (01.35 AM IST 22Aug) 
+
+
+
+
+HanumathaRao  27
+Leelavathi   56
+
+
+
+
+db.details.find(
+{
+ "projectConfigurations" : {$elemMatch:{"settingName":"qaEnabled","value":"true"}},
+ deleted: false,
+"projectInfo.projectName":{$in:
+  ["Thomas","Argent" ]
+  }
+},
+{"projectInfo.projectName":1,"projectConfigurations.settingName":1,   "projectConfigurations.value":1}
+)
+
+
+db.details.aggregate(
+[
+{$match:{"projectConfigurations" : {$elemMatch:{"settingName":"qaEnabled","value":"true"}}, deleted: false}},
+{$unwind:"$projectConfigurations"},
+{$match:{"projectConfigurations.settingName" : "qaEnabled"}}
+]
+)
+
+db.details.aggregate(
+[
+{$match:{"projectConfigurations" : {$elemMatch:{"settingName":"qaEnabled"}}, deleted: false,"projectInfo.projectName":{$in:
+  ["Thomas","Argent"  ]
+  }
+}},
+{$unwind:"$projectConfigurations"},
+{$match:{"projectConfigurations.settingName" : "qaEnabled"}}
+]
+)
+
+
+mongoimport --port 27017 -d bayarea -c stationBeanList --jsonArray --file C:/Users/109757/Desktop/tmp/stations.json
+mongoimport --port 27017 -d test -c TotalStationBeanListData --jsonArray --file C:/Users/109757/Desktop/tmp/stations.json
+
+
+
+
+var objInsert={
+"RDatetime" : ISODate("2018-03-31T18:30:00.000Z"),
+"Value" : 15.0,
+"Spec" : "-",
+"DiffValue" : "-",
+"process" : "Duplex",
+"subprocess" : "Sidewall",
+"parameter" : "Width",
+"compound" : "",
+"part" : "SRT02",
+"ucl" : "2.66",
+"lcl" : "-2.66",
+"usl" : "",
+"lsl" : "",
+"createdDate" : "05-04-2018 19:29:39",
+"updatedDate" : "09-05-2018 12:09:36",
+"Activestatus" : "active",
+"charttype" : "Difference",
+"chartvisual" : "good",
+"CLMethod" : "Manual",
+"orderno" : "1",
+"CLupdatedDates" : "2018-05-09 12:09:36.559",
+"OldUCL" : "19.76",
+"OldLCL" : "9.12",    
+"Parameters":[
+{"parameterName":"process",value:"Duplex"},
+{"parameterName":"subprocess",value:"Sidewall"},
+{"parameterName":"parameter",value:"Width"}
+]}
+
+db.samplemani.insert(objInsert);
+
+
+
+db.samplemani.find({
+"Parameters":{
+		$elemMatch:{
+					"parameterName":{$in:["process","subprocess","parameter"]},
+					"value":{$in:["Duplex","Sidewall","Width"]}
+					}
+}
+})
+
+
+var copy = db.samplemani.findOne({},{_id:0});
+for (var i = 0; i< 1000000; i++){ 
+    db.samplemani.insert(copy);
+}
+
+
+
+db.details.find(
+{
+ "projectConfigurations" : {$elemMatch:{"settingName":"qaEnabled","value":"true"}},
+ deleted: false,
+"projectInfo.projectName":{$in:
+  ["Thomas","Argent" ]
+  }
+},
+{"projectInfo.projectName":1,"projectConfigurations.settingName":1,   "projectConfigurations.value":1}
+)
+
+
+
+
+
+
+use mdb_qa
+db.FolioRequest.find().forEach(function(d){ db.getSiblingDB('mbd_test')['FolioRequest'].insert(d); });
+
+
+
+Pre-requisite:
+1. Server should be able to download the Mongo repository(Yum install)
+2. Each server should be able connect via 27017 port
+	To verify that telnet @Hostname 27017
+
+
+Create a KeyFile:
+1. openssl rand -base64 756 > /etc/pas-keyfile
+2. chmod 400 /etc/pas-keyfile
+3. Copy the same key file in all the other members in same path
+
+
+Steps to Install MongoDB
+
+1. Create a /etc/yum.repos.d/mongodb-org-3.6.repo file so that you can install MongoDB directly, using yum.
+
+2. Use the following repository file:
+[mongodb-org-3.6]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.6/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc
+
+3. Run the below command sudo yum install -y mongodb-org
+
+4. vi /etc/mongod.conf
+
+# mongod.conf
+
+# for documentation of all options, see:
+#   http://docs.mongodb.org/manual/reference/configuration-options/
+
+# where to write logging data.
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongo
+  journal:
+    enabled: true
+#  engine:
+#  mmapv1:
+#  wiredTiger:
+
+# how the process runs
+processManagement:
+  fork: true  # fork and run in background
+  pidFilePath: /var/run/mongodb/mongod.pid  # location of pidfile
+  timeZoneInfo: /usr/share/zoneinfo
+
+# network interfaces
+net:
+  port: 27017
+  bindIp: 0.0.0.0  # Listen to local interface only, comment to listen on all interfaces.
+
+security:
+  authorization: enabled
+  keyFile: /etc/pas-keyfile
+
+replication:
+  oplogSizeMB: 20480
+  replSetName: "pas_stage"
+
+#sharding:
+## Enterprise-Only Options
+#auditLog:
+#snmp:
+
+5. Run the command: service mongod start
+6. Run the command: mongo 
+7. Repeat the same step in other two secondary`s
+
+
+
+
+Steps to Initiate the Replication:
+
+1. Connect the Mongo Primary 
+2. Run the command rs.initiate() 
+3. Run the command rs.add("@HostnameSecondary1:27017");
+4. Run the command rs.add("@HostnameSecondary2:27017");
+5. Check the replication status by run the command rs.status()
+
+
+
+
+
+mongoexport --port 27017 --db jack --collection sensors --type=csv --out C:\Users\109757\Desktop\tmp\5b8a4e7ebb63a.csv --fields time,temperature
+mongoexport --port 27017 --db jack --collection sensors --type=csv --out C:\Users\109757\Desktop\tmp\5b8a537812b7d.csv --fields time,humidity
+mongoexport --port 27017 --db jack --collection sensors --type=csv --out C:\Users\109757\Desktop\tmp\5b8a53eb979a0.csv --fields time,deviceTypeValue
+
+
+
+
+db.metadata.aggregate([
+{$match:{type:"F",fileSize:{$exists:true}}},
+{$project: {"fileSize":1,year: { $year: "$lastUpdatedDate" },month: { $month: "$lastUpdatedDate" },fileSize:"$fileSize" }},
+{$group:{_id:{year:"$year", month:"$month"},Count: { "$sum": 1 } }}
+])
+
+
+
+
+var objInsert=
+[
+{"Date" : ISODate("2018-03-31T18:30:00.000+0000"), "category":"A"},
+{"Date" : ISODate("2018-03-31T18:30:00.000+0000"), "category":"F"},
+{"Date" : ISODate("2018-03-31T18:30:00.000+0000"), "category":"A"},
+{"Date" : ISODate("2018-03-31T18:31:00.000+0000"), "category":"B"},
+{"Date" : ISODate("2018-03-31T18:31:00.000+0000"), "category":"B"},
+{"Date" : ISODate("2018-03-31T18:31:00.000+0000"), "category":"D"},
+{"Date" : ISODate("2018-03-31T18:33:00.000+0000"), "category":"C"},
+{"Date" : ISODate("2018-03-31T18:33:00.000+0000"), "category":"C"}
+]
+
+db.datesample.insertMany(objInsert);
+
+
+db.datesample.aggregate([
+{$match:{Date:{$gt:ISODate("2018-03-31T18:30:00.000+0000"),$lt:ISODate("2018-04-01T18:35:00.000+0000")}}},
+{$project: {"category":1,minutes: { $minute: "$Date" }}},
+{$group:{_id:{ minutes:"$minutes",cate:"$category"}}},
+{$sort:{"_id.minutes":1}}
+])
+
+Output:
+{ 
+    "_id" : {
+        "minutes" : NumberInt(30), 
+        "cate" : "F"
+    }
+}
+{ 
+    "_id" : {
+        "minutes" : NumberInt(30), 
+        "cate" : "A"
+    }
+}
+{ 
+    "_id" : {
+        "minutes" : NumberInt(31), 
+        "cate" : "D"
+    }
+}
+{ 
+    "_id" : {
+        "minutes" : NumberInt(31), 
+        "cate" : "B"
+    }
+}
+{ 
+    "_id" : {
+        "minutes" : NumberInt(33), 
+        "cate" : "C"
+    }
+}
+
+
+
+{{ "$match" : { "process" : { "$eq" : "Extrusion" }, "subprocess" : { "$eq" : "Duplex" }, "parameter" : { "$eq" : "Sidewall Width" }, "part" : { "$eq" : "SRT01" }, 
+"RDatetime" : { "$gte" : ISODate("2018-08-31T18:30:00Z"), "$lte" : ISODate("2018-09-30T18:29:59Z") } } }} 
+ 
+ 
+  {{ "$project" : { "_id" : { "process" : "$process", "subprocess" : "$subprocess", "parameter" : "$parameter", "part" : "$part", "Activestatus" : "$Activestatus", "Value" : "$Value", "CLupdatedDates" : "$CLupdatedDates", "OldUCL" : "$OldUCL", "OldLCL" : "$OldLCL", "minutes" : { "$minute" : "$RDatetime" } } } }}
+ 
+  {{ "$group" : { "_id" : { "process" : "$process", "subprocess" : "$subprocess", "parameter" : "$parameter", "part" : "$part", "Activestatus" : "$Activestatus", "Value" : "$Value", "CLupdatedDates" : "$CLupdatedDates", "OldUCL" : "$OldUCL", "OldLCL" : "$OldLCL", "RDatetime" : "$RDatetime" } } }}
+
+  
+  
+db.createUser(
+{
+user: "root",
+pwd: "root@123",
+roles: [ { role: "root", db: "admin" } ]
+}
+)
+
+mongo --port 27018 -u root -p root@123 --authenticationDatabase admin
+
+
+db.samplemani.aggregate([
+{$match:
+  	{
+  	  RDatetime:{$gt:ISODate("2018-03-31T15:30:00.000+0000"),$lt:ISODate("2022-04-30T18:30:00.000+0000")},
+  	  process:"Duplex",
+	  subprocess:"Sidewall",
+	  parameter:"Width",
+	  part:"SRT02"
+  	}
+},
+{$project: 
+  {"process":1,"subprocess":1,"parameter":1,"part":1,"day": { $dayOfMonth: "$RDatetime" },"minutes": { $minute: "$RDatetime" }}
+ },
+{$group:
+  {_id:{ day:"$day",minutes:"$minutes",process:"$process",subprocess:"$subprocess",parameter:"$parameter",part:"$part"}}
+},
+{$sort:{"_id.day":1}}
+])
+
+
+Hi,
+Can we get explain output for the count command ie. db.sample.find({Name:"A"}).count().explain()
+I tried .count().explain() and .explain().count() both the command gives explain is not a function.
+
+Basically I need to analyse the index usage for the count command. 
+
+
+db.samplemani.find({"Parameters":{$elemMatch:{"parameterName":process","value":"Duplex"}}})
+
+
+MathOperation objMatch = new MathOperation();
+
+var a = MathOperation.Sum(1,2);
+var b = MathOperation.divi(1,2);
+
+
+MathOperation;
+
+
+construct()
+
+	Sum(int a,int b);
+	Division
+
+	
+FailedReport
+
+MainMethod(
+var tran=query();
+
+var blnrever= reverseValidation(tran);
+)	
+	
+	reverseValidation()
+	atmfailder
+	
+	
+	
+CustomeReport
+var objFail=new FailedReport();
+	var blnreverse=objFail.reverseValidation(tran);
+	
+	
+
+	
+Friends Need your help for the below scenario.
+
+Sample document in collection product:
+[{category:"A",subcategory:"AA"},
+ {category:"A",subcategory:"BB"}]
+ 
+1. I want to take the count of category A. db.product.count({"category":"A"}) 
+2. More than 90% document matches this condition
+3. Compound index already present in the collection for category and subcategory
+
+
+My Observation:
+1. As more than 90% of document match the condition its better to do the collscan rather than IXSCAN
+2. I cannt use hint to use the other index for the count query 
+
+Guys, Do you have any idea how to get the count with condition in better way.
+	
+mongoexport -h mgd-us2d-mgs-1a.adminsys.mrll.com:27017 --authenticationDatabase admin -u readOnly -p j@vd3v -d docMetadata -c doc-metadata -q '{projectId: 58d144b0b2181a00139b536a}' -o dmd_dev.json
+
+mongoexport -h mgd-us2d-mgs-1a.adminsys.mrll.com:27017 --authenticationDatabase admin -u readOnly -p j@vd3v -d docMetadata -c doc-metadata --query '{projectId:{$eq:"58d144b0b2181a00139b536a"}}' -o dmd_dev.json
+
+
+
+mongoexport -h mgd-us2p-gd-1a.dmz01.mrll.com --authenticationDatabase admin -u readOnly -p 'pr0dd3v' -d projects -c details --type=csv -q '{"projectConfigurations.settingName":"drmEnabled","projectConfigurations.value":"true"}' -o C:\Users\109757\Desktop\tmp\details.csv --fields _id 
+
+
+db.projectId.find().forEach(
+function(result) 
+{ 		
+var objprojectid=result.projectid;
+db.merrillAuditData_eu.find({projectId:objprojectid}).forEach(function(result_uk){
+db.projectId.update({projectid:objprojectid},{$set:{userRoleName:result_uk.userRoleName,userRoleType:result_uk.userRoleType,userRoleId:result_uk.userRoleId}})
+}) 		
+
+
+
+});
+
+
+db.metadata.find({ "access" : {$elemMatch:{"permissionGroupId":"qaEnabled"}}})
+
+
+
+
+var objInsert={     
+	"document":AA,
+    "arrayList" : [
+        {
+            "ListIndex" : 1, 
+            "ListIndexValue" : "A"
+        }, 
+        {
+            "ListIndex" : 2, 
+            "ListIndexValue" : "B"
+        },
+		{
+            "ListIndex" : 3, 
+            "ListIndexValue" : "C"
+        }, 
+        {
+            "ListIndex" : 4, 
+            "ListIndexValue" : "D"
+        }
+    ] 
+    
+}
+db.testArray.insert(objInsert);
+
+
+
+
+[
+    {
+        "_id" : ObjectId("5bf7ea48b93891e56cf3ad43"), 
+        "document" : "AA", 
+        "arrayList" : [
+            {
+                "ListIndex" : 1.0, 
+                "ListIndexValue" : "A"
+            }, 
+            {
+                "ListIndex" : 2.0, 
+                "ListIndexValue" : "B"
+            }, 
+            {
+                "ListIndex" : 3.0, 
+                "ListIndexValue" : "C"
+            }, 
+            {
+                "ListIndex" : 4.0, 
+                "ListIndexValue" : "D"
+            }
+        ]
+    }, 
+    {
+        "_id" : ObjectId("5bf7ea4fb93891e56cf3ad44"), 
+        "document" : "BB", 
+        "arrayList" : [
+            {
+                "ListIndex" : 1.0, 
+                "ListIndexValue" : "A"
+            }, 
+            {
+                "ListIndex" : 2.0, 
+                "ListIndexValue" : "B"
+            }, 
+            {
+                "ListIndex" : 3.0, 
+                "ListIndexValue" : "C"
+            }, 
+            {
+                "ListIndex" : 4.0, 
+                "ListIndexValue" : "D"
+            }
+        ]
+    }, 
+    {
+        "_id" : ObjectId("5bf7ea52b93891e56cf3ad45"), 
+        "document" : "CC", 
+        "arrayList" : [
+            {
+                "ListIndex" : 1.0, 
+                "ListIndexValue" : "A"
+            }, 
+            {
+                "ListIndex" : 2.0, 
+                "ListIndexValue" : "B"
+            }, 
+            {
+                "ListIndex" : 3.0, 
+                "ListIndexValue" : "C"
+            }, 
+            {
+                "ListIndex" : 4.0, 
+                "ListIndexValue" : "D"
+            }
+        ]
+    }
+]
+
+
+Expected "[" or AggregationStage but "{" found
+
+db.testArray.aggregate(
+[
+{$unwind:"$arrayList"},
+{$match:{"arrayList" : {$elemMatch:{"ListIndex":2}}}},
+{$match:{"arrayList.ListIndex" : 1}}
+]
+)
+
+{$match:{"docForms" : {$elemMatch:{"pName":"ORIGINAL"}}}},
+
+db.metadata.aggregate(
+[
+{$project:{"docForms.pName":1,_id:1}},
+{$unwind:"$docForms"},
+{$match:{_id:{$in:[ObjectId('5bfd0b0c6203d50014b23e44')]}}}
+{$match:{"docForms.pName" : "ORIGINAL"}}
+]
+)
+
+
+,"docForms.docProperties.fileSize":1
+
+
+
+
+
+
+"value":{$in:["Duplex","Sidewall","Width"]}
+
+
+
+Mongo DB 
+
+Course contents 
+
+2 days outline
+
+Database Administration
+• Database status
+	db.stats()
+• Troubleshooting issues
+	What kind Troubleshooting System or slowness, server level
+		top - system
+		df -h storage details
+		ps -ef|grep mongo Process details
+		tail -f mongod.log
+		grep -RIL Error mongod.log 
+		Profiling 2 
+		
+		Slowness:
+		.explain()
+		indexstats
+		loadbalancer() and chunkmigration
+		sh.status()
+		rs.slaveReplicationinfo()
+		rs.status()		
+		Ops Manager
+		
+		server:		
+		mongotop
+		mongostat
+		
+• Current Operations
+	db.currentOp(ns:)
+
+• Rotating log files
+	db.adminCommand( { logRotate : 1 } )
+• Users and Roles
+	root
+	
+• Copy and Clone database
+	db.copyDatabase(fromdb, todb, fromhost, username, password, mechanism)
+	db.cloneDatabase("hostname")
+• DB and Collection Stats
+	db.stats
+	db.collection.stats()
+• Explain plan
+	Query Plan
+	Winning Plan
+	rejectedPlans
+	executionStats
+• Profiling
+	db.setProfiling(0,2)
+	0 - Nothing
+	1 - MS
+	2 - All
+• Changing configuration files
+	/etc/mongod.conf	
+• Upgrading the database
+	yum/repos.d 
+	yum install mongodb-enterprise
+	stepdown and update the secondary.
+		
+Backup and Security
+• Concept of backups
+	Snap shot 
+	Full Backup
+	Incremental Backup - Ops manager
+• mongoexport/mongoimport
+	json,csv
+• mongodump/mongorestore
+	bson 
+• Oplog backups
+	
+• LVM Backups
+	Snap Shot	
+• Backups using MMS/Ops Manager
+	Configuration, Scheduled
+• Purpose of security
+	Encrypted communication, Avoid data loss
+• Authentication and authorization
+	Authentication - Server level login
+	Authorizaton  - Role level
+• Role based access control
+	read,readwrite
+Replication
+• Concept of replication
+	
+• ReplicaSet member roles
+	Primary
+	Secondary
+	Arbiter
+	
+	Member stats:
+	Primary
+	Secondary
+	Arbiter
+	Startup2
+	Error
+	Unknown
+	Recovery
+	Startup
+	down 
+	rollback
+	removed
+	
+	
+• Voting and Electing primary
+	Priority 0 - standbys it has data but it wont elections, hidden
+	
+• Role of Oplog in replication
+• Read and Write Concern
+• Arbiter,Hidden and Delayed replica node
+• Priority settings
+• Replicaset nodes health check
+• Concept of resyncing the nodes
+• Rollbacks during failover
+• Keyfile authentication
+Scalability
+• Concept of Scalability
+• Sharding concept
+• Shardkey and Chunks
+• Choosing shardkey
+• Sharding components
+• Types of Sharding
+• Balanced data distribution
+• Sharded and Non-sharded collection
+• Sharded Replicaset
+• Tag aware sharding
+
+Monitoring and Other Tools
+
+• MMS Manager
+• Ops Manager
+• Mongo utility commands
+• Mongo developer tools
+• Mongodb Atlas
+• Mongodb client drivers
+• Schema designing
+• Performance analysis and optimization
+• refactoring on migrations and index creations on container initialization
+• Security Performance improvements for writes and reads.
+• Transactions
+• Upgrading all environments with latest mongo DB versions in order to get benefit of improvements.
+
+• Working for sharding and replication for multiple regions and deployment in AWS Cloud. = not mandatory
+
+• Monitoring of machines and configuration servers for multiple regions .
+• Different types Storage engines and their usage.
+
+note : entire training will happen with case study and practical and theory ratio will be 65:35
+

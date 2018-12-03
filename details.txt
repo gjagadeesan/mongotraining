@@ -1,0 +1,81 @@
+RDBMS 
+NOSQL
+ACID Property
+CAP Therorm
+NOSQL Types
+Intro MongoDB
+Mongo components
+Mongo Installation in Windows
+Mongo Installation in Linux
+Mongo Storage Engines
+Basic CRUD Operations
+Mongoimport/mongoexport
+Mongodump/Mongodrestore
+Mongo server status
+Mongo database status
+Log Rotate
+Copy and Clone database
+Security 
+Users and Roles
+Profiling
+Index
+Replication
+
+
+
+systemLog:
+  destination: file
+  path: "C:\\Users\\Jack\\Desktop\\mongo\\36\\data\\mongod.log"
+  logAppend: true
+storage:
+  dbPath: "C:\\Users\\Jack\\Desktop\\mongo\\36\\data\\db"
+security:
+  authorization: disabled
+net:
+  port: 27017
+  bindIp: localhost  
+  
+
+/etc/yum.repos.d/mongodb-enterprise.repo
+[mongodb-enterprise]
+name=MongoDB Enterprise Repository
+baseurl=https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/4.0/$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
+
+
+sudo yum install -y mongodb-enterprise
+
+sudo yum update -y mongodb-enterprise
+sudo service mongod start
+
+mongoexport --host localhost --db dbname --collection name --type=csv --out text.csv --fields firstName,middleName,lastName
+mongoimport -d mydb -c things --type csv --file locations.csv --headerline
+
+mongodump --host mongodb1.example.net --port 3017 --username user --password "pass" --out 
+mongorestore --host mongodb1.example.net --port 3017 --username user --password 'pass' /opt/
+
+db.adminCommand( { logRotate : 1 } )
+db.copydatabase("a","b","localhost");
+
+Database User Roles
+Database Administration Roles
+Cluster Administration Roles
+Backup and Restoration Roles
+All-Database Roles
+Superuser Roles
+
+db.setProfilingLevel(2)
+
+
+db.createUser(
+{
+user: "admin",
+pwd: "pass",
+roles: [ { role: "root", db: "admin" } ]
+}
+)
+
+
+mongod --replSet rs  --smallfiles --nojournal --noprealloc --dbpath C:\Jagadeesan\mongo\3.6\replicaSet\shard0\m0 --logpath C:\Jagadeesan\mongo\3.6\replicaSet\shard0\m0\mongod.log --port 27107 --oplogSize 10 --bind_ip localhost
